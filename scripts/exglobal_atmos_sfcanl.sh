@@ -113,7 +113,8 @@ done
 # Copy the NSST analysis file for global_cycle
 # There is only a single NSST analysis at the middle of the window
 # For now use/assume it is the same at the beginning of the window if doing IAU
-if [[ "${DONST}" == "YES" ]]; then
+if [[ "${DONST}" == "YES" ]] && [[ ${NST_GSI} -gt 0 ]]; then
+OATARDIR: '/NCEPDEV/${HPSS_PROJECT}/1year/${USER}/${machine}/scratch/${PSLOT}'
   ${NCP} "${COMIN_ATMOS_ANALYSIS}/${APREFIX}dtfanl.nc" "${DATA}/dtfanl"
   export NST_FILE="dtfanl"
 else
