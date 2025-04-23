@@ -1,0 +1,18 @@
+experiment:
+  system: gfs
+  mode: cycled
+
+arguments:
+  pslot: {{ 'pslot' | getenv }}
+  app: S2S
+  resdetatmos: 192
+  resdetocean: 0.25
+  comroot: {{ 'RUNTESTS' | getenv }}/COMROOT
+  expdir: {{ 'RUNTESTS' | getenv }}/EXPDIR
+  icsdir: {{ 'ICSDIR_ROOT' | getenv }}
+  idate: 2021032400
+  edate: 2021032512
+  nens: 0
+  interval: 0
+  start: cold   
+  yaml: {{ HOMEgfs }}/dev/ci/cases/coupledreanl/soca_sfsproto2_defaults_ci.yaml
