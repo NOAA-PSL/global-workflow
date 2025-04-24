@@ -12,6 +12,7 @@ arguments:
   icsdir: {{ 'ICSDIR_ROOT' | getenv }}
   idate: 2021032400
   edate: 2021032512
+  account: {{ 'HPC_ACCOUNT' | getenv }}
   nens: 0
   interval: 0
   start: cold   
