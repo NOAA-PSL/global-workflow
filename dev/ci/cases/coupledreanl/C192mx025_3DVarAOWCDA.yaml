@@ -10,6 +10,7 @@ arguments:
   comroot: {{ 'RUNTESTS' | getenv }}/COMROOT
   expdir: {{ 'RUNTESTS' | getenv }}/EXPDIR
   icsdir: {{ 'ICSDIR_ROOT' | getenv }}
+  account: ira-da
   idate: 2021032400
   edate: 2021032512
   account: {{ 'HPC_ACCOUNT' | getenv }}
@@ -17,3 +18,4 @@ arguments:
   interval: 0
   start: cold   
   yaml: {{ HOMEgfs }}/dev/ci/cases/coupledreanl/marine3dvar.yaml
+  icsdir: /gpfs/f6/ira-da/proj-shared/Jeffrey.S.Whitaker/replayics/C192mx025
