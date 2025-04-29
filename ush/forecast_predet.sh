@@ -562,9 +562,18 @@ FV3_predet(){
   fi
   if (( ICO2 > 0 )); then
     local file
+    for file in "/gpfs/f6/ira-da/world-shared/co2dat_4a/global_co2historicaldata"* ; do
+      ${NCP} "${file}" "${DATA}/$(basename "${file//global_}")"
+    done
     for file in "${FIXgfs}/am/${co2dir}/global_co2historicaldata"* ; do
       ${NCP} "${file}" "${DATA}/$(basename "${file//global_}")"
     done
+    # if FIXCO2 set, use extra historical co2 files from that directory
+    if [[ -n ${FIXCO2} ]]; then
+       for file in "${FIXCO2}/global_co2historicaldata"* ; do
+         ${NCP} "${file}" "${DATA}/$(basename "${file//global_}")"
+       done
+    fi
   fi
 
   # Inline UPP fix files
