@@ -7,7 +7,7 @@ import tarfile
 from logging import getLogger
 from typing import Any, Dict, List
 
-from wxflow import (AttrDict, FileHandler, Hsi, Htar, Task, to_timedelta,
+from wxflow import (AttrDict, FileHandler, Hsi, Htar, Aws, Task, to_timedelta,
                     chgrp, get_gid, logit, mkdir_p, parse_j2yaml, rm_p, rmdir,
                     strftime, to_YMDH, which, chdir, ProcessError, save_as_yaml)
 
@@ -143,6 +143,15 @@ class Archive(Task):
             self.chgrp_cmd = chgrp
             self.chmod_cmd = os.chmod
             self.rm_cmd = rm_p
+        elif arch_dict.ARCHCOM_TO == "aws":
+            self.tar_cmd = "tar"
+            self.aws = Aws()
+            self.cvf = self.aws.cvf
+            self.chgrp_cmd = chgrp
+            self.chmod_cmd = os.chmod
+            self.rm_cmd = rm_p
+            self.archto = "aws"
+            # we need this 'archto' flag to handle the rst_prod stuff differently for AWS, since the arch_dict does not get passed on
         else:
             raise ValueError("FATAL ERROR: Invalid achiving method selected: {arch_dict.ARCHCOM_TO}")
 
@@ -213,7 +222,8 @@ class Archive(Task):
             logger.warning(f"WARNING: skipping would-be empty archive {atardir_set.target}.")
             return
 
-        if atardir_set.has_rstprod:
+        # aws.py checks for rstprod at the individual file level, then omits those from archive entirely
+        if atardir_set.has_rstprod and self.archto != "aws":
 
             try:
                 self.cvf(atardir_set.target, atardir_set.fileset)
