@@ -30,9 +30,9 @@ PARTITION_CRON: 'cron_c6'
 USE_SCRONTAB: 'YES'
 # HPSS properties
 HPSS_PROJECT: emc-global
-ARCHCOM_TO: 'hpss'
+ARCHCOM_TO: 'aws'
 #ATARDIR: '/NCEPDEV/${HPSS_PROJECT}/1year/${USER}/${machine}/scratch/${PSLOT}'
-ATARDIR: '/ESRL/BMC/gsienkf/1year/${USER}/${machine}/scratch/${PSLOT}'
+ATARDIR: 's3://noaa-reanalyses-pds/analyses/scout_runs/3dvar_coupledreanl_scoutrun_1979streamv1'
 CHGRP_RSTPROD: 'NO'
 CHGRP_CMD: 'chgrp rstprod'
 # Features
