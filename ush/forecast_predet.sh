@@ -152,7 +152,7 @@ FV3_predet(){
   if [[ ! -d "${DATArestart}/FV3_RESTART" ]]; then mkdir -p "${DATArestart}/FV3_RESTART"; fi
   ${NLN} "${DATArestart}/FV3_RESTART" "${DATA}/RESTART"
 
-  FHZER=${FHZER:-6}
+  FHZERO=${FHZERO:-6}
   FHCYC=${FHCYC:-24}
   restart_interval=${restart_interval:-${FHMAX}}
   # restart_interval = 0 implies write restart at the END of the forecast i.e. at FHMAX
@@ -582,7 +582,7 @@ FV3_predet(){
     ${NCP} "${PARMgfs}/ufs/post_itag_gfs"                         "${DATA}/itag"  # TODO: Need a GEFS version when available in the UFS-weather-model
     # TODO: These should be replaced with ones from the ufs-weather-model when available there
     case ${NET} in
-      gfs)
+      gfs|gcafs)
         ${NCP} "${PARMgfs}/post/gfs/postxconfig-NT-gfs-two.txt"     "${DATA}/postxconfig-NT.txt"
         ${NCP} "${PARMgfs}/post/gfs/postxconfig-NT-gfs-f00-two.txt" "${DATA}/postxconfig-NT_FH00.txt"
         ;;

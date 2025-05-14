@@ -35,6 +35,9 @@ local med_model="cmeps"
 local med_petlist_bounds="0 $(( MEDPETS-1 ))"
 local med_omp_num_threads="${MEDTHREADS}"
 
+# vector remapping
+local MAPUV3D=true
+
 if [[ "${cpl}" = ".true." ]]; then
   local coupling_interval_slow_sec="${CPL_SLOW}"
 fi
@@ -52,6 +55,11 @@ if [[ "${cplflx}" = ".true." ]]; then
   local RUNTYPE="${cmeps_run_type}"
   local CMEPS_RESTART_DIR="CMEPS_RESTART/"
   local CPLMODE="${cplmode}"
+  local CMEPS_PIO_FORMAT='pnetcdf'
+  local CMEPS_PIO_STRIDE=4
+  local CMEPS_PIO_IOTASKS=-99
+  local CMEPS_PIO_REARR='box'
+  local CMEPS_PIO_ROOT=-99  
   local coupling_interval_fast_sec="${CPL_FAST}"
   local RESTART_N=999999
   local ocean_albedo_limit=0.06

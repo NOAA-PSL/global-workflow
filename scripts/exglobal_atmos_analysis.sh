@@ -60,7 +60,7 @@ lobsdiag_forenkf=${lobsdiag_forenkf:-".false."}
     
 # IAU
 DOIAU=${DOIAU:-"NO"}
-export IAUFHRS=${IAUFHRS:-"6"}
+export IAUFHRS=${IAUFHRS:-"6,"}
 
 # Dependent Scripts and Executables
 GSIEXEC=${GSIEXEC:-${EXECgfs}/gsi.x}
@@ -308,6 +308,7 @@ HYBENSINFO=${HYBENSINFO:-${FIXgfs}/gsi/global_hybens_info.l${LEVS}.txt}
 OBERROR=${OBERROR:-${FIXgfs}/gsi/prepobs_errtable.global}
 OBS_INPUT=${OBS_INPUT:-${FIXgfs}/gsi/build_gsinfo/obs_input_ops.txt}
 HIRS_FIX=${HIRS_FIX:-${CRTM_FIX}}
+BLACKLST=${BLACKLST:-${FIXgfs}/gsi/rejectlist_global.txt}
 
 # GSI namelist
 SETUP=${SETUP:-""}
@@ -354,16 +355,6 @@ if [ ${DOHYBVAR} = "YES" -a ${l4densvar} = ".true." -a ${lwrite4danl} = ".true."
    ATMI09=${ATMI09:-${COMOUT_ATMOS_ANALYSIS}/${APREFIX}atmi009.nc}
 fi
 
-################################################################################
-#  Preprocessing
-mkdata=NO
-if [ ! -d ${DATA} ]; then
-   mkdata=YES
-   mkdir -p ${DATA}
-fi
-
-cd ${DATA} || exit 99
-
 ##############################################################
 # Fixed files
 ${NLN} ${BERROR}       berror_stats
@@ -393,6 +384,7 @@ ${NLN} ${AEROINFO}     aeroinfo
 ${NLN} ${SCANINFO}     scaninfo
 ${NLN} ${HYBENSINFO}   hybens_info
 ${NLN} ${OBERROR}      errtable
+${NLN} ${BLACKLST}     blacklist
 
 ${NLN} ${FIXgfs}/gsi/AIRS_CLDDET.NL   AIRS_CLDDET.NL
 ${NLN} ${FIXgfs}/gsi/CRIS_CLDDET.NL   CRIS_CLDDET.NL
@@ -824,7 +816,7 @@ cat > gsiparm.anl << EOF
   use_poq7=.true.,qc_noirjaco3_pole=.true.,vqc=.false.,nvqc=.true.,
   aircraft_t_bc=.true.,biaspredt=1.0e5,upd_aircraft=.true.,cleanup_tail=.true.,
   tcp_width=70.0,tcp_ermax=7.35,airs_cads=${AIRS_CADS},cris_cads=${CRIS_CADS},
-  iasi_cads=${IASI_CADS},
+  iasi_cads=${IASI_CADS},blacklst=.true.,
   ${OBSQC}
 /
 &OBS_INPUT
@@ -930,10 +922,7 @@ fi
 
 ################################################################################
 # Postprocessing
-cd ${pwd}
-if [[ "${mkdata}" == "YES" ]]; then
-    rm -rf ${DATA}
-fi
+cd "${pwd}" || exit 1
 
 ##############################################################
 # Add this statement to release the forecast job once the
@@ -943,10 +932,8 @@ fi
 if [ ${SENDECF} = "YES" -a "${RUN}" != "enkf" ]; then
    ecflow_client --event release_fcst
 fi
-echo "${rCDUMP} ${CDATE} atminc done at $(date)" > ${COMOUT_ATMOS_ANALYSIS}/${APREFIX}loginc.txt
+echo "${rCDUMP} ${CDATE} atminc done at $(date)" > "${COMOUT_ATMOS_ANALYSIS}/${APREFIX}loginc.txt"
 
 ################################################################################
 
-exit ${err}
-
-################################################################################
+exit "${err}"
