@@ -1,7 +1,8 @@
 git clone --recursive https://github.com/NOAA-PSL/global-workflow
 cd global-workflow
 git checkout 3dvar_coupledreanl_scoutrun
-source /dev/ush/gw_setup.sh
+git submodule update --init --recursive
+source dev/ush/gw_setup.sh
 cd sorc
 ./build_all.sh gfs gsi gdas &> build_all.out
 sh linkworkflow.sh
