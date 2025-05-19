@@ -562,9 +562,6 @@ FV3_predet(){
   fi
   if (( ICO2 > 0 )); then
     local file
-    for file in "/gpfs/f6/ira-da/world-shared/co2dat_4a/global_co2historicaldata"* ; do
-      ${NCP} "${file}" "${DATA}/$(basename "${file//global_}")"
-    done
     for file in "${FIXgfs}/am/${co2dir}/global_co2historicaldata"* ; do
       ${NCP} "${file}" "${DATA}/$(basename "${file//global_}")"
     done
