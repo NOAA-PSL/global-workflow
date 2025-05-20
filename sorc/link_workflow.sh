@@ -75,7 +75,7 @@ case "${machine}" in
 "orion") FIX_DIR="/work2/noaa/global/role-global/fix" ;;
 "hercules") FIX_DIR="/work2/noaa/global/role-global/fix" ;;
 "gaeac5") FIX_DIR="/gpfs/f5/ufs-ard/world-shared/global/glopara/data/fix" ;;
-"gaeac6") FIX_DIR="/gpfs/f6/ira-da/world-shared/global/glopara/fix" ;;
+"gaeac6") FIX_DIR="/gpfs/f6/drsa-precip3/world-shared/role.glopara/fix" ;;
 "noaacloud") FIX_DIR="/contrib/global-workflow-shared-data/fix" ;;
 *)
   echo "FATAL: Unknown target machine ${machine}, couldn't set FIX_DIR"
