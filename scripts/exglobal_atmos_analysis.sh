@@ -306,7 +306,7 @@ AEROINFO=${AEROINFO:-${FIXgfs}/gsi/global_aeroinfo.txt}
 SCANINFO=${SCANINFO:-${FIXgfs}/gsi/global_scaninfo.txt}
 HYBENSINFO=${HYBENSINFO:-${FIXgfs}/gsi/global_hybens_info.l${LEVS}.txt}
 OBERROR=${OBERROR:-${FIXgfs}/gsi/prepobs_errtable.global}
-OBS_INPUT=${OBS_INPUT:-${FIXgfs}/gsi/build_gsinfo/obs_input_ops.txt}
+OBS_INPUT=${OBS_INPUT:-${BUILD_GSINFO_DIR}/obs_input_ops.txt}
 HIRS_FIX=${HIRS_FIX:-${CRTM_FIX}}
 BLACKLST=${BLACKLST:-${FIXgfs}/gsi/rejectlist_global.txt}
 
