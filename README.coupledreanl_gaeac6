@@ -22,9 +22,6 @@ NOTES:
 
 log files go to $RUNTESTS/COMROOT/$EXPDIR/logs. if rocotoviewer shows a workflow step died, look in the log file here to find the error message.
 
-if BUILD_GSINFO=YES, versions/fix.ver needs to be edited to point to an updated gsi fix dir with the build_gsinfo submodule included.
-AND sorc/link_workflow.sh needs to be edited so that the new gsi fix dir is linked (+"gaeac6") FIX_DIR="/gpfs/f6/ira-da/world-shared/global/glopara/fix" ;;)
-
 To monitor t2m/q2m obs, add
 
   t2m       1      -1         2m_temperature       tmp2m
