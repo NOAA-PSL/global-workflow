@@ -10,7 +10,7 @@ cd ..
 pslot="C192coupled3dvar_test" RUNTESTS="/gpfs/f6/ira-da/scratch/$USER/GWTESTS" ICSDIR_ROOT="/gpfs/f6/ira-da/proj-shared/Jeffrey.S.Whitaker/replayics/C192mx025" HPC_ACCOUNT="ira-da" ./dev/workflow/create_experiment.py --yaml dev/ci/cases/coupledreanl/C192mx025_3DVarAOWCDA.yaml
 
 on orion/hercules:
-pslot="C192coupled3dvar_test" RUNTESTS="/work2/noaa/gsienkf/$USER/GWTESTS" ICSDIR_ROOT="/work/noaa/gsienkf/whitaker/replayics/replayics/C192mx025" HPC_ACCOUNT="gsienkf" ./dev/workflow/create_experiment.py --yaml dev/ci/cases/coupledreanl/C192mx025_3DVarAOWCDA.yaml
+pslot="C192coupled3dvar_test" RUNTESTS="/work2/noaa/gsienkf/$USER/GWTESTS" ICSDIR_ROOT="/work/noaa/gsienkf/whitaker/replayics/C192mx025" HPC_ACCOUNT="gsienkf" ./dev/workflow/create_experiment.py --yaml dev/ci/cases/coupledreanl/C192mx025_3DVarAOWCDA.yaml
 
 cd to EXPDIR
 run rocotorun -w $PSLOT.xml -d $PSLOT.db
