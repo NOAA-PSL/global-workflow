@@ -15,10 +15,12 @@ base:
   DO_VERFOZN: "YES"
   DO_VERFRAD: "YES"
   DO_TEST_MODE: "YES"
+  DO_GSISOILDA: "YES"
 
 prepoceanobs:
   use_exp_obs: "YES"
   dmpdir_exp: /gpfs/f6/ira-da/proj-shared/Jeffrey.S.Whitaker/da/common
+  #dmpdir_exp: /work/noaa/global/glopara/data/experimental_obs
 
 marineanl:
   SOCA_INPUT_FIX_DIR: {{ HOMEgfs }}/fix/gdas/soca/1440x1080x75/soca
