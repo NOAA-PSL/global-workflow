@@ -19,4 +19,4 @@ arguments:
   start: cold   
   yaml: {{ HOMEgfs }}/dev/ci/cases/coupledreanl/marine3dvar.yaml
   icsdir: /gpfs/f6/ira-da/proj-shared/Jeffrey.S.Whitaker/replayics/C192mx025
-  !icsdir: /work/noaa/gsienkf/whitaker/replayics/C192mx025
+  #icsdir: /work/noaa/gsienkf/whitaker/replayics/C192mx025
