@@ -10,7 +10,6 @@ export hsi_ver=9.3
 # source "${HOMEgfs:-}/versions/spack.ver"
 # rather than create a whole new spack.ver file, just append the spack version numbers below
 
-export spack_mod_path="/ncrc/proj/epic/spack-stack/c6/spack-stack-${spack_stack_ver}/envs/${spack_env}/install/modulefiles/Core"
 export spack_stack_ver=1.6.0
 export cmake_ver=3.23.1
 export python_ver=3.10.13
@@ -60,3 +59,6 @@ export prepobs_run_ver=1.1.0
 
 export ens_tracker_ver=v1.2.0
 export fit2obs_ver=1.1.7
+
+
+export spack_mod_path="/ncrc/proj/epic/spack-stack/c6/spack-stack-${spack_stack_ver}/envs/${spack_env}/install/modulefiles/Core"
