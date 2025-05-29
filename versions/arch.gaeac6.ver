@@ -60,5 +60,4 @@ export prepobs_run_ver=1.1.0
 export ens_tracker_ver=v1.2.0
 export fit2obs_ver=1.1.7
 
-
 export spack_mod_path="/ncrc/proj/epic/spack-stack/c6/spack-stack-${spack_stack_ver}/envs/${spack_env}/install/modulefiles/Core"
