@@ -17,4 +17,4 @@ arguments:
   interval: 0
   start: warm   
   yaml: {{ HOMEgfs }}/dev/ci/cases/coupledreanl/marine3dvar.yaml
-  icsdir:  /gpfs/f6/ira-da/world-shared/replayics/C192mx025
+  icsdir:  /gpfs/f6/ira-da/world-shared/replayics/C192mx025 #/gpfs/f6/ira-da/proj-shared/Jeffrey.S.Whitaker/dumps
