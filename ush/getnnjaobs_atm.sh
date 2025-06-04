@@ -39,6 +39,7 @@ MM=`echo $YYYYMMDDHH | cut -c5-6`
 YYYY=`echo $YYYYMMDDHH | cut -c1-4`
 CDUMP='gdas'
 S3PATH=/noaa-reanalyses-pds/observations/reanalysis
+S3PATH_ICE=/noaa-reanalyses-pds/boundary_conditions/CFSR/ice
 S3PATH_PRIVATE=/nnja-private-eumetsat/observations/reanalysis
 # directory structure required by global-workflow
 TARGET_DIR=${OUTPATH}/${CDUMP}.${YYYYMMDD}/${HH}/atmos
@@ -230,7 +231,25 @@ if [ $obtyp == "tcvitals" ] || [ $obtyp == "all" ]; then
       aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
    fi
 fi
+# get ice analysis
+s3file=s3:/"${S3PATH_ICE}/${YYYY}/${MM}/cfsr.${YYYYMMDD}.t${HH}z.icegrb
+localfile="${TARGET_DIR}/gdas.t${HH}z.seaice.5min.blend.grb"
+if [ $obtyp == "icegrb" ] || [ $obtyp == "all" ]; then
+   if [ $dryrun == "true" ]; then
+      echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+      aws s3 ls --no-sign-request $s3file
+      if [ $? -ne 0 ]; then
+         echo "$s3file not found"
+      fi
+   else
+      fi
+   else
+      aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+   fi
+fi
 wait
+# create updated.status file
+echo "yes" > "${TARGET_DIR}/gdas.t${HH}z.updated.status.tm00.bufr_d"
 if [ $dryrun != "true" ]; then
    ls -l ${TARGET_DIR}
 fi
