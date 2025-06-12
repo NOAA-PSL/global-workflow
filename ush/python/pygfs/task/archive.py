@@ -150,8 +150,6 @@ class Archive(Task):
             self.chgrp_cmd = chgrp
             self.chmod_cmd = os.chmod
             self.rm_cmd = rm_p
-            self.archto = "aws"
-            # we need this 'archto' flag to handle the rst_prod stuff differently for AWS, since the arch_dict does not get passed on
         else:
             raise ValueError("FATAL ERROR: Invalid achiving method selected: {arch_dict.ARCHCOM_TO}")
 
@@ -223,7 +221,7 @@ class Archive(Task):
             return
 
         # aws.py checks for rstprod at the individual file level, then omits those from archive entirely
-        if atardir_set.has_rstprod and self.archto != "aws":
+        if atardir_set.has_rstprod and not hasattr(self, "aws"):
 
             try:
                 self.cvf(atardir_set.target, atardir_set.fileset)

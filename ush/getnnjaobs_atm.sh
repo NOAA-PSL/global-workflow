@@ -18,6 +18,8 @@ which aws
 if [ $? -ne 0 ]; then
    # gaeac6
    #module use /ncrc/proj/epic/spack-stack/c6/spack-stack-1.6.0/envs/unified-env/install/modulefiles/Core
+   # orion
+   module use /work/noaa/epic/role-epic/spack-stack/orion/spack-stack-1.6.0/envs/unified-env-rocky9/install/modulefiles/Core
    module load stack-intel
    module load awscli-v2
 fi
@@ -39,6 +41,7 @@ MM=`echo $YYYYMMDDHH | cut -c5-6`
 YYYY=`echo $YYYYMMDDHH | cut -c1-4`
 CDUMP='gdas'
 S3PATH=/noaa-reanalyses-pds/observations/reanalysis
+S3PATH_ICE=/noaa-reanalyses-pds/boundary-conditions/CFSR/ice
 S3PATH_PRIVATE=/nnja-private-eumetsat/observations/reanalysis
 # directory structure required by global-workflow
 TARGET_DIR=${OUTPATH}/${CDUMP}.${YYYYMMDD}/${HH}/atmos
@@ -76,7 +79,6 @@ for n in ${!obtypes[@]}; do
          echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
          aws s3 ls --no-sign-request $s3file
          if [ $? -ne 0 ]; then
-         if [ $? -ne 0 ]; then
              echo "$s3file not found"
          fi
      else
@@ -89,12 +91,13 @@ for n in ${!obtypes[@]}; do
      #ls -l $localfile
   fi
 done
-wait
+#wait
 # prepbufr
-obtypes="prepbufr prepbufr.acft_profiles"
-for obtype in $obtypes; do
-   if [ ${obtypes[$n]} == $obtyp ] || [ $obtyp == "all" ]; then
-      if [ $obtype == "prepbufr" ]; then
+obtypes=("prepbufr" "prepbufr.acft_profiles")
+for n in ${!obtypes[@]}; do
+   obtype=${obtypes[$n]}
+   if [ $obtype == $obtyp ] || [ $obtyp == "all" ]; then
+      if [ ${obtypes[$n]} == "prepbufr" ]; then
          s3file=s3:/"${S3PATH}/conv/${obtype}/${YYYY}/${MM}/prepbufr/gdas.${YYYYMMDD}.t${HH}z.${obtype}.nr"
       else
          s3file=s3:/"${S3PATH}/conv/${obtype}/${YYYY}/${MM}/bufr/gdas.${YYYYMMDD}.t${HH}z.${obtype}.nr"
@@ -161,8 +164,6 @@ if [ $obtyp == "sbuv_v87" ] || [ $obtyp == "all" ]; then
       echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
       aws s3 ls --no-sign-request $s3file
       if [ $? -ne 0 ]; then
-      aws s3 ls --no-sign-request $s3file
-      if [ $? -ne 0 ]; then
          echo "$s3file not found"
       fi
    else
@@ -191,8 +192,6 @@ for n in ${!obtypes[@]}; do
      fi
      #ls -l $localfile
   fi
-done
-wait
 done
 wait
 # over-write with private eumetsat data if available
@@ -225,12 +224,27 @@ if [ $obtyp == "tcvitals" ] || [ $obtyp == "all" ]; then
          echo "$s3file not found"
       fi
    else
-      fi
-   else
-      aws s3 cp --no-sign-request --only-show-errors $s3file $localfile &
+      aws s3 cp --no-sign-request --only-show-errors $s3file $localfile  &
    fi
 fi
 wait
+# get ice analysis
+s3file=s3:/"${S3PATH_ICE}/${YYYY}/${MM}/grib/cfsr.${YYYYMMDD}.t${HH}z.icegrb"
+localfile="${TARGET_DIR}/gdas.t${HH}z.seaice.5min.blend.grb"
+if [ $obtyp == "icegrb" ] || [ $obtyp == "all" ]; then
+   if [ $dryrun == "true" ]; then
+      echo "aws s3 cp --no-sign-request --only-show-errors $s3file $localfile"
+      aws s3 ls --no-sign-request $s3file
+      if [ $? -ne 0 ]; then
+         echo "$s3file not found"
+      fi
+   else
+      aws s3 cp --no-sign-request --only-show-errors $s3file $localfile  &
+   fi
+fi
+wait
+# create updated.status file
+echo "yes" > "${TARGET_DIR}/gdas.t${HH}z.updated.status.tm00.bufr_d"
 if [ $dryrun != "true" ]; then
    ls -l ${TARGET_DIR}
 fi
