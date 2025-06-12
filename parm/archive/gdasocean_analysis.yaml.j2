@@ -4,7 +4,7 @@ gdasocean_analysis:
     target: "{{ ATARDIR }}/{{ cycle_YMDH }}/gdasocean_analysis.tar"
     required:
         # analysis and analysis increments
-        - '{{ COMIN_OCEAN_ANALYSIS | relpath(ROTDIR) }}/{{ head }}ocninc.nc'
+        #- '{{ COMIN_OCEAN_ANALYSIS | relpath(ROTDIR) }}/{{ head }}ocninc.nc'
         {% for domain in ["ocn", "ice"] %}
         - '{{ COMIN_OCEAN_ANALYSIS | relpath(ROTDIR) }}/{{ head }}{{domain}}.incr.nc'
         - '{{ COMIN_OCEAN_ANALYSIS | relpath(ROTDIR) }}/{{ head }}{{domain}}ana.nc'

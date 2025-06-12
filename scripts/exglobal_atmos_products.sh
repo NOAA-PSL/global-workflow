@@ -55,13 +55,13 @@ if [[ ${downset} -eq 2 ]]; then
 fi
 
 # Determine grids once and save them as a string and an array for processing
-grid_string="0p25"
-if [[ "${PGBS:-}" == "YES" ]]; then
-  grid_string="${grid_string}:0p50:1p00"
-else
-  echo "Supplemental product generation is disable for fhr = ${fhr3}"
-  PGBS="NO"  # Can't generate supplemental products if PGBS is not YES
-fi
+grid_string="0p50"
+#if [[ "${PGBS:-}" == "YES" ]]; then
+#  grid_string="${grid_string}:0p50:1p00"
+#else
+#  echo "Supplemental product generation is disable for fhr = ${fhr3}"
+#  PGBS="NO"  # Can't generate supplemental products if PGBS is not YES
+#fi
 # Also transform the ${grid_string} into an array for processing
 IFS=':' read -ra grids <<< "${grid_string}"
 

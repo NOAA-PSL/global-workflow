@@ -43,6 +43,6 @@ gdas_restarta:
         {% endif %}
 
         # Input BUFR files
-        - "{{ COMIN_OBS | relpath(ROTDIR) }}/{{ head }}nsstbufr"
+        #- "{{ COMIN_OBS | relpath(ROTDIR) }}/{{ head }}nsstbufr"
         - "{{ COMIN_OBS | relpath(ROTDIR) }}/{{ head }}prepbufr"
         - "{{ COMIN_OBS | relpath(ROTDIR) }}/{{ head }}prepbufr.acft_profiles"

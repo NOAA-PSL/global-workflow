@@ -41,10 +41,10 @@ gdas:
             {% endif %}
 
         # Analysis GRIB2 (sub-sampled) data
-        - "{{ COMIN_ATMOS_GRIB_0p25 | relpath(ROTDIR) }}/{{ head }}pgrb2.0p25.anl"
-        - "{{ COMIN_ATMOS_GRIB_0p25 | relpath(ROTDIR) }}/{{ head }}pgrb2.0p25.anl.idx"
-        - "{{ COMIN_ATMOS_GRIB_1p00 | relpath(ROTDIR) }}/{{ head }}pgrb2.1p00.anl"
-        - "{{ COMIN_ATMOS_GRIB_1p00 | relpath(ROTDIR) }}/{{ head }}pgrb2.1p00.anl.idx"
+        #- "{{ COMIN_ATMOS_GRIB_0p25 | relpath(ROTDIR) }}/{{ head }}pgrb2.0p25.anl"
+        #- "{{ COMIN_ATMOS_GRIB_0p25 | relpath(ROTDIR) }}/{{ head }}pgrb2.0p25.anl.idx"
+        #- "{{ COMIN_ATMOS_GRIB_1p00 | relpath(ROTDIR) }}/{{ head }}pgrb2.1p00.anl"
+        #- "{{ COMIN_ATMOS_GRIB_1p00 | relpath(ROTDIR) }}/{{ head }}pgrb2.1p00.anl.idx"
 
         # Analysis netCDF (raw) data
         - "{{ COMIN_ATMOS_ANALYSIS | relpath(ROTDIR) }}/{{ head }}atmanl.nc"
@@ -74,7 +74,7 @@ gdas:
             {% else %}
         - "{{ COMIN_ATMOS_ANALYSIS | relpath(ROTDIR) }}/{{ head }}gsistat"
         - "{{ COMIN_ATMOS_ANALYSIS | relpath(ROTDIR) }}/{{ head }}cnvstat"
-        - "{{ COMIN_ATMOS_ANALYSIS | relpath(ROTDIR) }}/{{ head }}oznstat"
+        #- "{{ COMIN_ATMOS_ANALYSIS | relpath(ROTDIR) }}/{{ head }}oznstat"
         - "{{ COMIN_ATMOS_ANALYSIS | relpath(ROTDIR) }}/{{ head }}radstat"
         - "{{ COMIN_ATMOS_ANALYSIS | relpath(ROTDIR) }}/{{ head }}abias"
         - "{{ COMIN_ATMOS_ANALYSIS | relpath(ROTDIR) }}/{{ head }}abias_air"
@@ -105,21 +105,21 @@ gdas:
 
         # Ozone verification
             {% if DO_VERFOZN %}
-        - "{{ COMIN_ATMOS_OZNMON | relpath(ROTDIR) }}/time/bad_cnt.{{ cycle_YMDH }}"
-        - "{{ COMIN_ATMOS_OZNMON | relpath(ROTDIR) }}/time/bad_diag.{{ cycle_YMDH }}"
-        - "{{ COMIN_ATMOS_OZNMON | relpath(ROTDIR) }}/time/bad_pen.{{ cycle_YMDH }}"
-        - "{{ COMIN_ATMOS_OZNMON | relpath(ROTDIR) }}/time/stdout.time.tar.gz"
-        - "{{ COMIN_ATMOS_OZNMON | relpath(ROTDIR) }}/horiz/stdout.horiz.tar.gz"
-        - "logs/{{ cycle_YMDH }}/{{ RUN }}_verfozn.log"
+        #- "{{ COMIN_ATMOS_OZNMON | relpath(ROTDIR) }}/time/bad_cnt.{{ cycle_YMDH }}"
+        #- "{{ COMIN_ATMOS_OZNMON | relpath(ROTDIR) }}/time/bad_diag.{{ cycle_YMDH }}"
+        #- "{{ COMIN_ATMOS_OZNMON | relpath(ROTDIR) }}/time/bad_pen.{{ cycle_YMDH }}"
+        #- "{{ COMIN_ATMOS_OZNMON | relpath(ROTDIR) }}/time/stdout.time.tar.gz"
+        #- "{{ COMIN_ATMOS_OZNMON | relpath(ROTDIR) }}/horiz/stdout.horiz.tar.gz"
+        #- "logs/{{ cycle_YMDH }}/{{ RUN }}_verfozn.log"
             {% endif %}
 
-        # Radiance verification
+        # Radiance verification - Deactivated to contour error with RADSTAT when starting in 1979
             {% if DO_VERFRAD %}
-        - "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_angle.tar.gz"
-        - "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_bcoef.tar.gz"
-        - "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_bcor.tar.gz"
-        - "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_time.tar.gz"
-        - "logs/{{ cycle_YMDH }}/{{ RUN }}_verfrad.log"
+        ##- "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_angle.tar.gz"
+        ##- "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_bcoef.tar.gz"
+        ##- "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_bcor.tar.gz"
+        ##- "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_time.tar.gz"
+        ##- "logs/{{ cycle_YMDH }}/{{ RUN }}_verfrad.log"
             {% endif %}
 
         # Minimization monitor
@@ -143,10 +143,10 @@ gdas:
         - "logs/{{ cycle_YMDH }}/{{ RUN }}_atmos_upp_f{{ fhr3 }}.log"
             {% endif %}  ## not WRITE_DOPOST
         # Forecast GRIB2 data
-        - "{{ COMIN_ATMOS_GRIB_0p25 | relpath(ROTDIR) }}/{{ head }}pgrb2.0p25.f{{ fhr3 }}"
-        - "{{ COMIN_ATMOS_GRIB_0p25 | relpath(ROTDIR) }}/{{ head }}pgrb2.0p25.f{{ fhr3 }}.idx"
-        - "{{ COMIN_ATMOS_GRIB_1p00 | relpath(ROTDIR) }}/{{ head }}pgrb2.1p00.f{{ fhr3 }}"
-        - "{{ COMIN_ATMOS_GRIB_1p00 | relpath(ROTDIR) }}/{{ head }}pgrb2.1p00.f{{ fhr3 }}.idx"
+        #- "{{ COMIN_ATMOS_GRIB_0p25 | relpath(ROTDIR) }}/{{ head }}pgrb2.0p25.f{{ fhr3 }}"
+        #- "{{ COMIN_ATMOS_GRIB_0p25 | relpath(ROTDIR) }}/{{ head }}pgrb2.0p25.f{{ fhr3 }}.idx"
+        #- "{{ COMIN_ATMOS_GRIB_1p00 | relpath(ROTDIR) }}/{{ head }}pgrb2.1p00.f{{ fhr3 }}"
+        #- "{{ COMIN_ATMOS_GRIB_1p00 | relpath(ROTDIR) }}/{{ head }}pgrb2.1p00.f{{ fhr3 }}.idx"
         # Forecast GRIB2 fluxes
         - "{{ COMIN_ATMOS_MASTER | relpath(ROTDIR) }}/{{ head }}sfluxgrbf{{ fhr3 }}.grib2"
         - "{{ COMIN_ATMOS_MASTER | relpath(ROTDIR) }}/{{ head }}sfluxgrbf{{ fhr3 }}.grib2.idx"

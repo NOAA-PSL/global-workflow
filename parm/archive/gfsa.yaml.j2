@@ -47,7 +47,7 @@ gfsa:
         {% endif %}
 
         # BUFR inputs
-        - "{{ COMIN_OBS | relpath(ROTDIR) }}/{{ head }}nsstbufr"
+        #- "{{ COMIN_OBS | relpath(ROTDIR) }}/{{ head }}nsstbufr"
         - "{{ COMIN_OBS | relpath(ROTDIR) }}/{{ head }}prepbufr"
         - "{{ COMIN_OBS | relpath(ROTDIR) }}/{{ head }}prepbufr.acft_profiles"
         {% endif %}  # Full cycle
