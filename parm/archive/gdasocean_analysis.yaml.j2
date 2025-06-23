@@ -2,7 +2,7 @@ gdasocean_analysis:
     {% set head = "gdas.t" + cycle_HH + "z." %}
     name: "GDASOCEAN_ANALYSIS"
     target: "{{ ATARDIR }}/{{ cycle_YMDH }}/gdasocean_analysis.tar"
-    required:
+    optional:
         # analysis and analysis increments
         #- '{{ COMIN_OCEAN_ANALYSIS | relpath(ROTDIR) }}/{{ head }}ocninc.nc'
         {% for domain in ["ocn", "ice"] %}
