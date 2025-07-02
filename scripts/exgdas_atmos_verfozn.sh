@@ -41,7 +41,10 @@ if [[ -s ${oznstat} ]]; then
 
 else
    # oznstat file not found
-   export err=1
+   # 25.06.30 Ding - forcing this to 0 so that it shows as successful even if ozn data is unavailable
+   #     this is a hack to prevent the cycling from stopping when we don't have ozn obs available
+   echo "No ozone obs found for cycle "${PDY}${cyc}"." > ${ROTDIR}/gdas.${PDY}/${cyc}/ozn_obs_missing
+   export err=0
 fi
 
 err_chk
