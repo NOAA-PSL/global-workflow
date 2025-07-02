@@ -99,6 +99,7 @@ GSNDBF=${GSNDBF:-${COMIN_OBS}/${OPREFIX}goesnd.tm00.bufr_d${OSUFFIX}}
 GSNDBF1=${GSNDBF1:-${COMIN_OBS}/${OPREFIX}goesfv.tm00.bufr_d${OSUFFIX}}
 B1HRS2=${B1HRS2:-${COMIN_OBS}/${OPREFIX}1bhrs2.tm00.bufr_d${OSUFFIX}} # HIRS temporarily disabled due to CRTM versioning issues
 B1MSU=${B1MSU:-${COMIN_OBS}/${OPREFIX}1bmsu.tm00.bufr_d${OSUFFIX}}
+B1SSU=${B1SSU:-${COMIN_OBS}/${OPREFIX}1bssu.tm00.bufr_d${OSUFFIX}}
 B1HRS3=${B1HRS3:-${COMIN_OBS}/${OPREFIX}1bhrs3.tm00.bufr_d${OSUFFIX}} # HIRS temporarily disabled due to CRTM versioning issues
 B1HRS4=${B1HRS4:-${COMIN_OBS}/${OPREFIX}1bhrs4.tm00.bufr_d${OSUFFIX}} # HIRS temporarily disabled due to CRTM versioning issues
 B1AMUA=${B1AMUA:-${COMIN_OBS}/${OPREFIX}1bamua.tm00.bufr_d${OSUFFIX}}
@@ -467,6 +468,7 @@ ${NLN} ${RAPIDSCATBF}      rapidscatbufr
 ${NLN} ${GSNDBF}           gsndrbufr
 ${NLN} ${GSNDBF1}          gsnd1bufr
 ${NLN} ${B1MSU}            msubufr
+${NLN} ${B1SSU}            ssubufr
 ${NLN} ${B1AMUA}           amsuabufr
 ${NLN} ${B1AMUB}           amsubbufr
 ${NLN} ${B1MHS}            mhsbufr
