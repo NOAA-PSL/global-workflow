@@ -121,11 +121,11 @@ gdas:
 
         # Radiance verification - Deactivated to contour error with RADSTAT when starting in 1979
             {% if DO_VERFRAD %}
-        ##- "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_angle.tar.gz"
-        ##- "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_bcoef.tar.gz"
-        ##- "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_bcor.tar.gz"
-        ##- "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_time.tar.gz"
-        ##- "logs/{{ cycle_YMDH }}/{{ RUN }}_verfrad.log"
+        - "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_angle.tar.gz"
+        - "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_bcoef.tar.gz"
+        - "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_bcor.tar.gz"
+        - "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/radmon_time.tar.gz"
+        #- "logs/{{ cycle_YMDH }}/{{ RUN }}_verfrad.log"
             {% endif %}
 
         # Minimization monitor
@@ -168,10 +168,10 @@ gdas:
         {% if MODE == "cycled" %}
             # Radiance verification (only created if there are problems)
             {% if DO_VERFRAD %}
-        #- "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/bad_diag.{{ cycle_YMDH }}"
-        #- "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/bad_pen.{{ cycle_YMDH }}"
-        #- "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/low_count.{{ cycle_YMDH }}"
-        #- "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/warning.{{ cycle_YMDH }}"
+        - "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/bad_diag.{{ cycle_YMDH }}"
+        - "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/bad_pen.{{ cycle_YMDH }}"
+        - "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/low_count.{{ cycle_YMDH }}"
+        - "{{ COMIN_ATMOS_RADMON | relpath(ROTDIR) }}/warning.{{ cycle_YMDH }}"
             {% endif %}
 
             {% if DO_VERFOZN %}
