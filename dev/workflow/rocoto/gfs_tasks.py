@@ -254,9 +254,9 @@ class GFSTasks(Tasks):
             dep_dict = {'type': 'task', 'name': f'{self.run}_snowanl'}
             deps.append(rocoto.add_dependency(dep_dict))
         # Ding 25.07.22 temporarily patching this out as we are not running enkfgdas_eupd but need sfcanl
-        #if self.options['do_gsisoilda'] and self.run in ['gdas']:
-        #    dep_dict = {'type': 'task', 'name': 'enkfgdas_eupd'}
-        #    deps.append(rocoto.add_dependency(dep_dict))
+        # if self.options['do_gsisoilda'] and self.run in ['gdas']:
+        #     dep_dict = {'type': 'task', 'name': 'enkfgdas_eupd'}
+        #     deps.append(rocoto.add_dependency(dep_dict))
         if self.options['do_jedisnowda'] or (self.options['do_gsisoilda'] and self.run in ['gdas']):
             dependencies = rocoto.create_dependency(dep_condition='and', dep=deps)
         else:
