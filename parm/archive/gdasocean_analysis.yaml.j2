@@ -3,6 +3,9 @@ gdasocean_analysis:
     name: "GDASOCEAN_ANALYSIS"
     target: "{{ ATARDIR }}/{{ cycle_YMDH }}/gdasocean_analysis.tar"
     optional:
+        # TODO(AFE) cice_model_anl not tested with DOIAU="NO"
+        {% set anl_delta = "-3H" | to_timedelta %}
+        {% set anl_time = current_cycle | add_to_datetime(anl_delta) %}
         # analysis and analysis increments
         #- '{{ COMIN_OCEAN_ANALYSIS | relpath(ROTDIR) }}/{{ head }}ocninc.nc'
         - '{{ COMIN_ICE_ANALYSIS | relpath(ROTDIR) }}/{{ anl_time | to_YMD }}.{{ anl_time | strftime("%H") }}0000.cice_model_anl.res.nc'
@@ -27,8 +30,8 @@ gdasocean_analysis:
         {% endif %}
 
         # obs space diags
-        - '{{ COMIN_OCEAN_ANALYSIS | relpath(ROTDIR) }}/{{ head }}ocn.*.stats.csv'
+        - '{{ COMIN_OCEAN_ANALYSIS | relpath(ROTDIR) }}/diags/{{ head }}ocn.*.stats.csv'
         - '{{ COMIN_OCEAN_ANALYSIS | relpath(ROTDIR) }}/diags/*.nc4'
 
         # runtime configs
-        - '{{ COMIN_OCEAN_ANALYSIS | relpath(ROTDIR) }}/yaml/*.yaml'
+        - '{{ COMIN_CONF | relpath(ROTDIR) }}/*.yaml'
