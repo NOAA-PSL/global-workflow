@@ -149,7 +149,12 @@ FV3_predet(){
   if [[ ! -d "${COMOUT_ATMOS_HISTORY}" ]]; then mkdir -p "${COMOUT_ATMOS_HISTORY}"; fi
   if [[ ! -d "${COMOUT_ATMOS_MASTER}" ]]; then mkdir -p "${COMOUT_ATMOS_MASTER}"; fi
   if [[ ! -d "${COMOUT_ATMOS_RESTART}" ]]; then mkdir -p "${COMOUT_ATMOS_RESTART}"; fi
+  if [[ ! -d "${DATAoutput}/FV3ATM_OUTPUT" ]]; then mkdir -p "${DATAoutput}/FV3ATM_OUTPUT"; fi
   if [[ ! -d "${DATArestart}/FV3_RESTART" ]]; then mkdir -p "${DATArestart}/FV3_RESTART"; fi
+ 
+  # The $DATA/RESTART directory is used for writing FV3 restart files (it is hard-wired in the model)
+  # Link the output and restart directories to the DATA directory
+  ${NLN} "${DATAoutput}/FV3ATM_OUTPUT" "${DATA}/FV3ATM_OUTPUT"
   ${NLN} "${DATArestart}/FV3_RESTART" "${DATA}/RESTART"
 
   FHZERO=${FHZERO:-6}
@@ -621,9 +626,12 @@ WW3_predet(){
 
   if [[ ! -d "${COMOUT_WAVE_HISTORY}" ]]; then mkdir -p "${COMOUT_WAVE_HISTORY}"; fi
   if [[ ! -d "${COMOUT_WAVE_RESTART}" ]]; then mkdir -p "${COMOUT_WAVE_RESTART}"; fi
-
+  if [[ ! -d "${DATAoutput}/WW3_OUTPUT" ]]; then mkdir -p "${DATAoutput}/WW3_OUTPUT"; fi
   if [[ ! -d "${DATArestart}/WW3_RESTART" ]]; then mkdir -p "${DATArestart}/WW3_RESTART"; fi
-  # Wave restarts are linked in postdet to only create links for files that will be created
+
+  # Link the output and restart directories to the DATA directory
+  ${NLN} "${DATAoutput}/WW3_OUTPUT" "${DATA}/WW3_OUTPUT"
+  ${NLN} "${DATArestart}/WW3_RESTART" "${DATA}/WW3_RESTART"
 
   # Files from wave prep and wave init jobs
   # Copy mod_def files for wave grids
@@ -668,9 +676,11 @@ CICE_predet(){
   if [[ ! -d "${COMOUT_ICE_HISTORY}" ]]; then mkdir -p "${COMOUT_ICE_HISTORY}"; fi
   if [[ ! -d "${COMOUT_ICE_RESTART}" ]]; then mkdir -p "${COMOUT_ICE_RESTART}"; fi
   if [[ ! -d "${COMIN_ICE_INPUT}" ]]; then mkdir -p "${COMIN_ICE_INPUT}"; fi
-
-  if [[ ! -d "${DATA}/CICE_OUTPUT" ]]; then  mkdir -p "${DATA}/CICE_OUTPUT"; fi
+  if [[ ! -d "${DATAoutput}/CICE_OUTPUT" ]]; then  mkdir -p "${DATAoutput}/CICE_OUTPUT"; fi
   if [[ ! -d "${DATArestart}/CICE_RESTART" ]]; then mkdir -p "${DATArestart}/CICE_RESTART"; fi
+
+  # Link the output and restart directories to the DATA directory
+  ${NLN} "${DATAoutput}/CICE_OUTPUT" "${DATA}/CICE_OUTPUT"
   ${NLN} "${DATArestart}/CICE_RESTART" "${DATA}/CICE_RESTART"
 
   # CICE does not have a concept of high frequency output like FV3
@@ -692,9 +702,11 @@ MOM6_predet(){
   if [[ ! -d "${COMOUT_OCEAN_HISTORY}" ]]; then mkdir -p "${COMOUT_OCEAN_HISTORY}"; fi
   if [[ ! -d "${COMOUT_OCEAN_RESTART}" ]]; then mkdir -p "${COMOUT_OCEAN_RESTART}"; fi
   if [[ ! -d "${COMIN_OCEAN_INPUT}" ]]; then mkdir -p "${COMIN_OCEAN_INPUT}"; fi
-
-  if [[ ! -d "${DATA}/MOM6_OUTPUT" ]]; then mkdir -p "${DATA}/MOM6_OUTPUT"; fi
+  if [[ ! -d "${DATAoutput}/MOM6_OUTPUT" ]]; then mkdir -p "${DATAoutput}/MOM6_OUTPUT"; fi
   if [[ ! -d "${DATArestart}/MOM6_RESTART" ]]; then mkdir -p "${DATArestart}/MOM6_RESTART"; fi
+  
+  # Link the output and restart directories to the DATA directory
+  ${NLN} "${DATAoutput}/MOM6_OUTPUT" "${DATA}/MOM6_OUTPUT"
   ${NLN} "${DATArestart}/MOM6_RESTART" "${DATA}/MOM6_RESTART"
 
   # MOM6 does not have a concept of high frequency output like FV3
@@ -737,6 +749,8 @@ CMEPS_predet(){
   if [[ ! -d "${COMOUT_MED_RESTART}" ]]; then mkdir -p "${COMOUT_MED_RESTART}"; fi
 
   if [[ ! -d "${DATArestart}/CMEPS_RESTART" ]]; then mkdir -p "${DATArestart}/CMEPS_RESTART"; fi
+  
+  # Link the restart directory to the DATA directory
   ${NLN} "${DATArestart}/CMEPS_RESTART" "${DATA}/CMEPS_RESTART"
 
   # For CMEPS, CICE, MOM6 and WW3 determine restart writes
