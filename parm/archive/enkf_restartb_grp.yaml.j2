@@ -1,7 +1,7 @@
 enkf_restartb_grp:
     name: "ENKF_RESTARTB_GRP"
     target: "{{ ATARDIR }}/{{ cycle_YMDH }}/{{ RUN }}_restartb_grp{{ ENSGRP }}.tar"
-    required:
+    optional:
         {% for mem in range(first_group_mem, last_group_mem + 1) %}
         {% set imem = mem - first_group_mem %}
         {% set COMIN_ATMOS_RESTART_MEM = COMIN_ATMOS_RESTART_MEM_list[imem] %}

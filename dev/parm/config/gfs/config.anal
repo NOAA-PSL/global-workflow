@@ -28,6 +28,8 @@ fi
 # Set namelist option for LETKF
 export lobsdiag_forenkf=".false."  # anal does not need to write out jacobians
                                    # set to .true. in config.eobs and config.eupd
+export hofx_2m_sfcfile=".true."
+export ignore_2mQM=".true."
 
 # Reduce number of iterations for testing mode
 if [[ ${DO_TEST_MODE} = "YES" ]]; then
@@ -147,6 +149,18 @@ if [[ ${RUN_ENVIR} == "emc" ]]; then
   #     export SATINFO=${FIXgfs}/gsi/gfsv16_historical/global_satinfo.txt.2021110312
   #   fi
 fi
+
+if [[ ${USE_BUILD_GSINFO} == "YES" ]]; then
+   # these will be set based on date in scripts/exglobal_atmos_analysis.sh
+   export SATINFO="generate"
+   export CONVINFO="generate"
+   export OZINFO="generate"
+   export OBS_INPUT=${BUILD_GSINFO_DIR}/obs_input/obs_input_reanl_nasa_ozone.txt
+else
+   export OBS_INPUT=${BUILD_GSINFO_DIR}/obs_input/obs_input_ops.txt
+fi
+# path to "fixed" crtm coefficient files (needed for crtm < 3)
+export HIRS_FIX=${BUILD_GSINFO_DIR}/hirs_fix
 
 # Flag to turn on (.true.) or off (.false.) the infrared cloud and aerosol detection software
 # for AIRS, CrIS, and IASI.  Default is .false.

@@ -1,7 +1,7 @@
 enkf_grp:
     name: "ENKF_GRP"
     target: "{{ ATARDIR }}/{{ cycle_YMDH }}/{{ RUN }}_grp{{ ENSGRP }}.tar"
-    required:
+    optional:
         {% for mem in range(first_group_mem, last_group_mem + 1) %}
         {% set imem = mem - first_group_mem %}
         # Construct member COM directories

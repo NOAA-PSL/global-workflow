@@ -43,6 +43,8 @@ export FIXcice="${FIXgfs}/cice"
 export FIXmom="${FIXgfs}/mom6"
 export FIXreg2grb2="${FIXgfs}/reg2grb2"
 export FIXgdas="${FIXgfs}/gdas"
+export FIXCO2="/gpfs/f6/ira-da/world-shared/co2dat_4a" # extra historical co2 files
+#export FIXCO2="/work/noaa/gsienkf/whitaker/fix_NEW/fix_am/co2dat_4a" # extra historical co2 files
 
 ########################################################################
 
@@ -380,6 +382,8 @@ export SMOOTH_ENKF="NO"
 export l4densvar=".true."
 export lwrite4danl=".true."
 export DO_CALC_INCREMENT="NO"
+export USE_BUILD_GSINFO="YES"
+export BUILD_GSINFO_DIR="${HOMEgfs}/sorc/build_gsinfo"
 
 # Early-cycle EnKF parameters
 export NMEM_ENS_GFS="{{ NMEM_ENS_GFS }}"

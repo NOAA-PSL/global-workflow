@@ -2,7 +2,7 @@ gfs_restarta:
     {% set head = "gfs.t" + cycle_HH + "z." %}
     name: "GFS_RESTARTA"
     target: "{{ ATARDIR }}/{{ cycle_YMDH }}/gfs_restarta.tar"
-    required:
+    optional:
         {% if MODE == "cycled" %}
         {% if DOHYBVAR and DOIAU %}
         {% set anl_offset = "-3H" %}

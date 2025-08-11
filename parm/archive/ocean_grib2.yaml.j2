@@ -2,7 +2,7 @@ ocean_grib2:
     {% set head = "gfs.ocean.t" + cycle_HH + "z." %}
     name: "OCEAN_GRIB2"
     target: "{{ ATARDIR }}/{{ cycle_YMDH }}/ocean_grib2.tar"
-    required:
+    optional:
         {% for fhr in range(FHOUT_OCN_GFS, FHMAX_GFS + FHOUT_OCN_GFS, FHOUT_OCN_GFS) %}
         {% set fhr3 = '%03d' % fhr %}
         {% if OCNRES == 500 %}

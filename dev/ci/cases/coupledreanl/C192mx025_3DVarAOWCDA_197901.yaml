@@ -1,0 +1,20 @@
+experiment:
+  system: gfs
+  mode: cycled
+
+arguments:
+  pslot: {{ 'pslot' | getenv }}
+  app: S2S
+  resdetatmos: 192
+  resdetocean: 0.25
+  comroot: {{ 'RUNTESTS' | getenv }}/COMROOT
+  expdir: {{ 'RUNTESTS' | getenv }}/EXPDIR
+  icsdir: {{ 'ICSDIR_ROOT' | getenv }}
+  idate: 1979010106
+  edate: 1979020100 #1979020106  
+  account: {{ 'HPC_ACCOUNT' | getenv }}
+  nens: 0
+  interval: 0
+  start: warm   
+  yaml: {{ HOMEgfs }}/dev/ci/cases/coupledreanl/marine3dvar.yaml
+  # icsdir:  /gpfs/f6/ira-da/world-shared/replayics/C192mx025 #/gpfs/f6/ira-da/proj-shared/Jeffrey.S.Whitaker/dumps

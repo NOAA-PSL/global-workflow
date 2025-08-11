@@ -3,7 +3,8 @@
   url = https://github.com/ufs-community/ufs-weather-model
 [submodule "sorc/wxflow"]
   path = sorc/wxflow
-  url = https://github.com/NOAA-EMC/wxflow
+  url = https://github.com/NOAA-PSL/wxflow
+  branch = aws_archive
 [submodule "sorc/gfs_utils.fd"]
   path = sorc/gfs_utils.fd
   url = https://github.com/NOAA-EMC/gfs-utils
@@ -18,10 +19,14 @@
   url = https://github.com/NOAA-EMC/GSI.git
 [submodule "sorc/gdas.cd"]
   path = sorc/gdas.cd
-  url = https://github.com/NOAA-EMC/GDASApp.git
+  url = https://github.com/NOAA-PSL/GDASApp.git
+  branch = coupled_test
 [submodule "sorc/gsi_utils.fd"]
   path = sorc/gsi_utils.fd
   url = https://github.com/NOAA-EMC/GSI-Utils.git
 [submodule "sorc/gsi_monitor.fd"]
   path = sorc/gsi_monitor.fd
   url = https://github.com/NOAA-EMC/GSI-Monitor.git
+[submodule "sorc/build_gsinfo"]
+	path = sorc/build_gsinfo
+	url = https://github.com/NOAA-PSL/build_gsinfo.git

@@ -2,7 +2,7 @@ gdaswave:
     {% set head = "gdas.wave.t" + cycle_HH + "z." %}
     name: "GDASWAVE"
     target: "{{ ATARDIR }}/{{ cycle_YMDH }}/gdaswave.tar"
-    required:
+    optional:
         # TODO explicitly name the wave grid/station files to archive
         {% set WAVE_OUT_GRIDS_list = WAVE_OUT_GRIDS.split(' ') %}
         {% for grd in WAVE_OUT_GRIDS_list %}

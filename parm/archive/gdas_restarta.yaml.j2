@@ -2,7 +2,7 @@ gdas_restarta:
     {% set head = "gdas.t" + cycle_HH + "z." %}
     name: "GDAS_RESTARTA"
     target: "{{ ATARDIR }}/{{ cycle_YMDH }}/gdas_restarta.tar"
-    required:
+    optional:
         # Deterministic analysis increments
         {% if DO_JEDIATMVAR %}
         {% for itile in range(6) %}
@@ -56,6 +56,6 @@ gdas_restarta:
         {% endif %}
 
         # Input BUFR files
-        - "{{ COMIN_OBS | relpath(ROTDIR) }}/{{ head }}nsstbufr"
+        #- "{{ COMIN_OBS | relpath(ROTDIR) }}/{{ head }}nsstbufr"
         - "{{ COMIN_OBS | relpath(ROTDIR) }}/{{ head }}prepbufr"
         - "{{ COMIN_OBS | relpath(ROTDIR) }}/{{ head }}prepbufr.acft_profiles"

@@ -2,7 +2,7 @@ gdas_restartb:
     {% set head = "gdas.t" + cycle_HH + "z." %}
     name: "GDAS_RESTARTB"
     target: "{{ ATARDIR }}/{{ cycle_YMDH }}/gdas_restartb.tar"
-    required:
+    optional:
         # Grab the surface analysis data.
         # If IAU is on, grab the beginning of the window.
         {% if DOIAU %}
