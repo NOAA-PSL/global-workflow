@@ -1,9 +1,7 @@
 #!/bin/bash
+set -u
 
-# CSD - coppied from global_workflow. Needed to run GDASApp applications outside g_w of C6.
-echo "in module-setup"
-echo ${MACHINE_ID}
-#source "${HOMEgfs}/ush/detect_machine.sh"
+source "${HOMEgfs}/ush/detect_machine.sh"
 
 if [[ ${MACHINE_ID} = hera* ]] ; then
     # We are on NOAA Hera
@@ -58,22 +56,20 @@ elif [[ ${MACHINE_ID} = stampede* ]] ; then
 
 elif [[ ${MACHINE_ID} = gaeac5 ]] ; then
     # We are on GAEA C5.
-    echo "on gaea5"
-    #if ( ! eval module help > /dev/null 2>&1 ) ; then
+    if ( ! eval module help > /dev/null 2>&1 ) ; then
         # We cannot simply load the module command.  The GAEA
         # /etc/profile modifies a number of module-related variables
         # before loading the module command.  Without those variables,
         # the module command fails.  Hence we actually have to source
         # /etc/profile here.
         source /etc/profile
-    #fi
+    fi
     module reset
 elif [[ ${MACHINE_ID} = gaeac6 ]]; then
-    echo "on gaea6"
     # We are on GAEA C6.
-    #if ( ! eval module help > /dev/null 2>&1 ) ; then
+    if ( ! eval module help > /dev/null 2>&1 ) ; then
         source /opt/cray/pe/lmod/lmod/init/bash
-    #fi
+    fi
     module reset
 
 elif [[ ${MACHINE_ID} = expanse* ]]; then
