@@ -12,6 +12,8 @@ gPDY=${GDATE:0:8}
 gcyc=${GDATE:8:2}
 GDUMP="gdas"
 
+
+
 ##############################################
 # Begin JOB SPECIFIC work
 ##############################################
@@ -28,6 +30,12 @@ mkdir -m 775 -p "${COMOUT_SNOW_ANALYSIS}" "${COMOUT_CONF}"
 
 ###############################################################
 # Run relevant script
+ 
+
+# for testing only
+echo "CSD snow analysis job, manually coppying GHCN files" 
+echo $COMIN_OBS
+cp /gpfs/f6/scratch/Clara.Draper/gfs-cpu/LAND_TEMP/${gPDY}.csv ${COMIN_OBS}/gdas.t${cyc}z.ghcn_snow.csv
 
 EXSCRIPT=${SNOWANLPY:-${SCRgfs}/exglobal_snow_analysis.py}
 ${EXSCRIPT} && true
