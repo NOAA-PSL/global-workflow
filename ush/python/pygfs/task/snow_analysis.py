@@ -271,42 +271,40 @@ class SnowAnalysis(Task):
 
         # create a temporary dict of all keys needed in this method
         localconf = AttrDict()
-        keys = ['DATA', 'current_cycle', 'GHCN_DIR', 'COMIN_ATMOS_RESTART_PREV',
-                'OPREFIX', 'CASE', 'OCNRES', 'ntiles', 'FIXgfs']
+        keys = ['DATA', 'current_cycle', 'COMIN_OBS', 'OPREFIX', 'cyc']
         for key in keys:
             localconf[key] = self.task_config[key]
+
+        localconf['ghcn_filestub'] = f"ghcn_snow.{to_YMD(localconf.current_cycle)}.t{localconf.cyc:02d}z"
 
         # Read and render the GHCN_OBS_LIST yaml
         logger.info(f"Reading {self.task_config.GHCN_OBS_LIST}")
         prep_ghcn_config = parse_j2yaml(self.task_config.GHCN_OBS_LIST, localconf)
         logger.debug(f"{self.task_config.GHCN_OBS_LIST}:\n{pformat(prep_ghcn_config)}")
 
-        csv_file = os.path.join(localconf.GHCN_DIR, f"{to_YMD(localconf.current_cycle)}.csv")
+        csv_file = os.path.join(localconf.COMIN_OBS, f"{localconf.ghcn_filestub}.csv")
         if not os.path.isfile(csv_file):
-            logger.warning(f"WARNING: GHCN obs files are missing.")
+            logger.warning(f"WARNING: GHCN obs file not found.")
             return
 
         # define these locations in gdas/snow/prep/prep_ghcn.yaml.j2
-        # copy the GHCN obs files from GHCN_DIR to DATA
         logger.info("Copying GHCN obs to DATA")
-        FileHandler(prep_gchn_config.stage).sync()
-
-        logger.info(f"CSD exiting")
-        sys.exit()
+        FileHandler(prep_ghcn_config.stage).sync()
 
         # Execute ioda converter to create the GHCN obs data in IODA format
         logger.info("Create GHCN obs data in IODA format")
 
-# CSD - add all arguments here
-        input_file = f"IMSscf.{to_YMD(localconf.current_cycle)}.{localconf.CASE}_oro_data.nc"
-        output_file = f"ghcn_snow_{to_YMDH(localconf.current_cycle)}.nc4"
+        input_file = f"{localconf.ghcn_filestub}.csv"
+        output_file = f"{localconf.ghcn_filestub}.nc4"
+        station_file = f"ghcnd-stations.txt"
         if os.path.isfile(f"{os.path.join(localconf.DATA, output_file)}"):
             rm_p(output_file)
 
-#CSD - set the config
         exe = Executable(self.task_config.GHCN2IODACONV)
         exe.add_default_arg(["-i", f"{os.path.join(localconf.DATA, input_file)}"])
         exe.add_default_arg(["-o", f"{os.path.join(localconf.DATA, output_file)}"])
+        exe.add_default_arg(["-f", f"{os.path.join(localconf.DATA, station_file)}"])
+        exe.add_default_arg(["-d", f"{to_YMDH(localconf.current_cycle)}"])
         try:
             logger.debug(f"Executing {exe}")
             exe()
@@ -324,7 +322,7 @@ class SnowAnalysis(Task):
             raise FileNotFoundError(f"{os.path.join(localconf.DATA, output_file)}")
         else:
             logger.info(f"Copy {output_file} to {os.path.join(localconf.DATA, 'obs')}")
-            FileHandler(prep_ims_config.ims2ioda).sync()
+            FileHandler(prep_ghcn_config.ghcn2ioda).sync()
 
     @logit(logger)
     def execute(self, jedi_dict_key: str) -> None:
