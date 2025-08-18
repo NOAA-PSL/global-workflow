@@ -1,5 +1,5 @@
 experiment:
-  system: gfs
+  net: gfs
   mode: cycled
 
 arguments:
@@ -12,7 +12,6 @@ arguments:
   icsdir: {{ 'ICSDIR_ROOT' | getenv }}
   idate: 1979010106
   edate: 1979020100 #1979020106  
-  account: {{ 'HPC_ACCOUNT' | getenv }}
   nens: 0
   interval: 0
   start: warm   

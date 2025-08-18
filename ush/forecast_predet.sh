@@ -597,7 +597,7 @@ FV3_predet(){
     # if FIXCO2 set, use extra historical co2 files from that directory
     if [[ -n ${FIXCO2} ]]; then
        for file in "${FIXCO2}/global_co2historicaldata"* ; do
-         ${NCP} "${file}" "${DATA}/$(basename "${file//global_}")"
+         cpreq "${file}" "${DATA}/$(basename "${file//global_}")"
        done
     fi
   fi
