@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, sys
+import os
 from logging import getLogger
 from typing import Dict, List, Optional, Any
 from pprint import pformat
