@@ -110,16 +110,15 @@ class SnowAnalysis(Task):
         logger.debug(f"Background files:\n{pformat(bkg_staging_dict)}")
 
         # stage bufr observations
-        # CSD - if have not called this,  will need to create the obs dir.
-        #logger.info(f"Staging list of observation files generated from JEDI config")
-        #obs_dict = self.jedi_dict['snowanlvar'].render_jcb(self.task_config, 'snow_obs_staging')
-        #FileHandler(obs_dict).sync()
-        #logger.debug(f"Observation files:\n{pformat(obs_dict)}")
+        logger.info(f"Staging list of observation files generated from JEDI config")
+        obs_dict = self.jedi_dict['snowanlvar'].render_jcb(self.task_config, 'snow_obs_staging')
+        FileHandler(obs_dict).sync()
+        logger.debug(f"Observation files:\n{pformat(obs_dict)}")
 
         # stage GTS bufr2ioda mapping YAML files
-        #logger.info(f"Staging GTS bufr2ioda mapping YAML files from {self.task_config.GTS_SNOW_STAGE_YAML}")
-        #gts_mapping_list = parse_j2yaml(self.task_config.GTS_SNOW_STAGE_YAML, self.task_config)
-        #FileHandler(gts_mapping_list).sync()
+        logger.info(f"Staging GTS bufr2ioda mapping YAML files from {self.task_config.GTS_SNOW_STAGE_YAML}")
+        gts_mapping_list = parse_j2yaml(self.task_config.GTS_SNOW_STAGE_YAML, self.task_config)
+        FileHandler(gts_mapping_list).sync()
 
         # stage FV3-JEDI fix files
         logger.info(f"Staging JEDI fix files from {self.task_config.JEDI_FIX_YAML}")
