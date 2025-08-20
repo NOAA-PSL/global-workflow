@@ -62,12 +62,14 @@ class SnowAnalysis(Task):
                 'npx_ges': _res + 1,
                 'npy_ges': _res + 1,
                 'npz_ges': self.task_config.LEVS - 1,
+                'res': _res,
                 'npz': self.task_config.LEVS - 1,
                 'SNOW_WINDOW_BEGIN': _window_begin,
                 'SNOW_WINDOW_LENGTH': f"PT{self.task_config['assim_freq']}H",
                 'OPREFIX': f"{self.task_config.RUN}.t{self.task_config.cyc:02d}z.",
                 'APREFIX': f"{self.task_config.RUN}.t{self.task_config.cyc:02d}z.",
                 'GPREFIX': f"gdas.t{self.task_config.previous_cycle.hour:02d}z.",
+                'snow_prepobs_path': os.path.join(self.task_config.DATA, 'prep'),
                 'snow_obsdatain_path': os.path.join(self.task_config.DATA, 'obs'),
                 'snow_obsdataout_path': os.path.join(self.task_config.DATA, 'diags'),
                 'snow_bkg_path': os.path.join('.', 'bkg/'),
@@ -137,7 +139,6 @@ class SnowAnalysis(Task):
         newdirs = [
             os.path.join(self.task_config.DATA, 'anl'),
             os.path.join(self.task_config.DATA, 'diags'),
-            os.path.join(self.task_config.DATA, 'obs'),
         ]
         FileHandler({'mkdir': newdirs}).sync()
 
@@ -167,7 +168,7 @@ class SnowAnalysis(Task):
         # create a temporary dict of all keys needed in this method
         localconf = AttrDict()
         keys = ['DATA', 'current_cycle', 'COMIN_OBS', 'COMIN_ATMOS_RESTART_PREV',
-                'OPREFIX', 'CASE', 'OCNRES', 'ntiles', 'FIXgfs']
+                'OPREFIX', 'CASE', 'OCNRES', 'ntiles', 'FIXgfs', 'FIXorog']
         for key in keys:
             localconf[key] = self.task_config[key]
 
@@ -183,7 +184,7 @@ class SnowAnalysis(Task):
             logger.warning(f"WARNING: Obs files are missing. Will not execute CALCFIMSEXE")
             return
 
-        # copy the IMS obs files from COMIN_OBS to DATA/obs
+        # copy the IMS obs files from COMIN_OBS to DATA
         logger.info("Copying IMS obs for CALCFIMSEXE")
         FileHandler(prep_ims_config.calcfims).sync()
 
@@ -248,7 +249,7 @@ class SnowAnalysis(Task):
             logger.exception(f"{self.task_config.IMS2IODACONV} failed to produce {output_file}")
             raise FileNotFoundError(f"{os.path.join(localconf.DATA, output_file)}")
         else:
-            logger.info(f"Copy {output_file} to {os.path.join(localconf.DATA, 'obs')}")
+            logger.info(f"Copy {output_file} succesfully generated")
             FileHandler(prep_ims_config.ims2ioda).sync()
 
     @logit(logger)
@@ -320,7 +321,7 @@ class SnowAnalysis(Task):
             logger.exception(f"{self.task_config.GHCN2IODACONV} failed to produce {output_file}")
             raise FileNotFoundError(f"{os.path.join(localconf.DATA, output_file)}")
         else:
-            logger.info(f"Copy {output_file} to {os.path.join(localconf.DATA, 'obs')}")
+            logger.info(f"Copy {output_file} successfully generated")
             FileHandler(prep_ghcn_config.ghcn2ioda).sync()
 
     @logit(logger)
