@@ -23,10 +23,6 @@ if __name__ == '__main__':
     # Initialize JEDI 2DVar snow analysis
     snow_anl.initialize()
 
-    # Process IMS snow cover (if applicable)
-    if snow_anl.task_config.cyc == 0:
-        snow_anl.prepare_IMS()
-
     # Execute JEDI snow analysis
     snow_anl.execute('snowanlvar')
 
