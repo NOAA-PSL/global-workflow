@@ -14,7 +14,7 @@ base:
   DO_FIT2OBS: "YES"
   DO_VERFOZN: "YES"
   DO_VERFRAD: "YES"
-  DO_TEST_MODE: "YES"
+  DO_TEST_MODE: "NO"
   DO_GSISOILDA: "YES"
 
 prepoceanobs:
