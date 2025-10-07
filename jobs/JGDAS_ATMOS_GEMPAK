@@ -48,13 +48,13 @@ fi
 ############################################
 # print exec I/O output
 ############################################
-if [[ -e "${pgmout}" ]] ; then
-  cat "${pgmout}"
+if [[ -e "${pgmout}" ]]; then
+    cat "${pgmout}"
 fi
 
 ###################################
 # Remove temp directories
 ###################################
-if [[ "${KEEPDATA}" != "YES" ]] ; then
-  rm -rf "${DATA}"
+if [[ "${KEEPDATA}" != "YES" ]]; then
+    rm -rf "${DATA}"
 fi
