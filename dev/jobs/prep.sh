@@ -34,7 +34,7 @@ RUN=${RUN_local} YMD=${PDY} HH=${cyc} declare_from_tmpl -rx \
     COMINobsproc:COM_OBSPROC_TMPL \
     COMIN_TCVITAL:COM_TCVITAL_TMPL
 
-run=${GDUMP} YMD=${gPDY} HH=${gcyc} declare_from_tmpl -rx \
+RUN=${GDUMP} YMD=${gPDY} HH=${gcyc} declare_from_tmpl -rx \
     COMOUT_OBS_PREV:COM_OBS_TMPL \
     COMINobsproc_PREV:COM_OBSPROC_TMPL
 
