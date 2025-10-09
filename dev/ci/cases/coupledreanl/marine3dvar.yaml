@@ -16,6 +16,7 @@ base:
   DO_VERFRAD: "YES"
   DO_TEST_MODE: "NO"
   DO_GSISOILDA: "YES"
+  DONST: "NO"
 
 prepoceanobs:
   use_exp_obs: "YES"

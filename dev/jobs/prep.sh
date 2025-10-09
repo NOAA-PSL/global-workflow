@@ -34,7 +34,7 @@ RUN=${RUN_local} YMD=${PDY} HH=${cyc} declare_from_tmpl -rx \
     COMINobsproc:COM_OBSPROC_TMPL \
     COMIN_TCVITAL:COM_TCVITAL_TMPL
 
-RUN=${GDUMP} YMD=${gPDY} HH=${gcyc} declare_from_tmpl -rx \
+run=${GDUMP} YMD=${gPDY} HH=${gcyc} declare_from_tmpl -rx \
     COMOUT_OBS_PREV:COM_OBS_TMPL \
     COMINobsproc_PREV:COM_OBSPROC_TMPL
 
@@ -138,7 +138,7 @@ else
     fi
     cpreq "${PREPBUFR_DIR}/${OPREFIX}prepbufr" "${COMOUT_OBS}/${OPREFIX}prepbufr"
     cpreq "${PREPBUFR_DIR}/${OPREFIX}prepbufr.acft_profiles" "${COMOUT_OBS}/${OPREFIX}prepbufr.acft_profiles"
-    if [[ ${DONST} == "YES" ]]; then
+    if [[ ${DONST} == "YES" && -f "${PREPBUFR_DIR}/${OPREFIX}nsstbufr" ]]; then
         cpreq "${PREPBUFR_DIR}/${OPREFIX}nsstbufr" "${COMOUT_OBS}/${OPREFIX}nsstbufr"
     fi
 fi

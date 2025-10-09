@@ -1,8 +1,6 @@
 experiment:
   net: gfs
   mode: cycled
-
-arguments:
   pslot: {{ 'pslot' | getenv }}
   app: S2S
   resdetatmos: 192
@@ -17,3 +15,11 @@ arguments:
   start: warm   
   yaml: {{ HOMEgfs }}/dev/ci/cases/coupledreanl/marine3dvar.yaml
   # icsdir:  /gpfs/f6/ira-da/world-shared/replayics/C192mx025 #/gpfs/f6/ira-da/proj-shared/Jeffrey.S.Whitaker/dumps
+
+workflow:
+  engine: rocoto
+  rocoto:
+    maxtries: 2
+    cyclethrottle: 3
+    taskthrottle: 25
+    verbosity: 2
