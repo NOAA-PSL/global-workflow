@@ -64,7 +64,7 @@ class GFSCycledRocotoXML(RocotoXML):
         edate_str = edate.strftime("%Y%m%d%H%M")
         interval_str = timedelta_to_HMS(interval)
         strings = []
-        strings.append(f'\t<cycledef group="gdas_half">{sdate_str} {sdate_str} {interval_str}</cycledef>')
+        #strings.append(f'\t<cycledef group="gdas_half">{sdate_str} {sdate_str} {interval_str}</cycledef>')
         sdate = sdate + interval
         sdate_str = sdate.strftime("%Y%m%d%H%M")
         strings.append(f'\t<cycledef group="gdas">{sdate_str} {edate_str} {interval_str}</cycledef>')
