@@ -7,6 +7,7 @@ source "${HOMEgfs}/ush/jjob_header.sh" -e "prepoceanobs" -c "base marineanl prep
 ##############################################
 
 YMD=${PDY} HH=${cyc} declare_from_tmpl -rx COMOUT_OBS:COM_OBS_TMPL
+YMD=${PDY} HH=${cyc} declare_from_tmpl -rx COMOUT_OBSFROG:COM_OBSFROG_TMPL
 
 ##############################################
 # Begin JOB SPECIFIC work
@@ -18,6 +19,13 @@ YMD=${PDY} HH=${cyc} declare_from_tmpl -rx COMOUT_OBS:COM_OBS_TMPL
 EXSCRIPT=${GDASPREPOCNOBSPY:-${SCRgfs}/exglobal_prep_ocean_obs.py}
 ${EXSCRIPT} && true
 export err=$?
+
+# OBSFROG Ding: touch an empty  "obsForge" status file into COMOUT_OBSFROG
+if [[ ${err} -eq 0 ]]; then
+    touch ${COMOUT_OBSFROG}/"gdas.t"${cyc}"z.obsforge_marine_status.log"
+    touch ${COMOUT_OBSFROG}/"insitu/gdas.t"${cyc}"z.obsforge_marine_bufr_status.log"
+fi
+
 if [[ ${err} -ne 0 ]]; then
     err_exit
 fi

@@ -45,6 +45,7 @@ else
     COM_TCVITAL_TMPL='${DMPDIR}/${RUN}.${YMD}/${HH}/atmos'
 fi
 declare -rx COM_OBS_TMPL='${ROTDIR}/${RUN}.${YMD}/${HH}/obs'
+declare -rx COM_OBSFROG_TMPL='${DMPDIR}/${RUN}.${YMD}/${HH}/ocean'
 declare -rx COM_OBSPROC_TMPL COM_RTOFS_TMPL
 
 COM_BASE='${ROTDIR}/${RUN}.${YMD}/${HH}/${MEMDIR}'
