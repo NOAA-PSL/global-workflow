@@ -22,10 +22,10 @@ if [[ ${DONST} = "YES" ]]; then
   . ${EXPDIR}/config.nsst
 fi
 
-if [[ "${RUN/enkf}" == "gfs" ]]; then  
+#if [[ "${RUN/enkf}" == "gfs" ]]; then  
     echo "turning off gsi soilda for gfs run"
     DO_GSISOILDA="NO"
-fi
+#fi
 
 if [[ "${DO_GSISOILDA}" == "YES" ]]; then
     if [[ ${DO_LAND_IAU} = ".true." ]]; then
