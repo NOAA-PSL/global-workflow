@@ -4,8 +4,7 @@ set -x
 
 ###############################################################
 # Source FV3GFS workflow modules
-# PSL fork - 25.05.21 Ding Liu - replace fv3gfs modules with awsarch modules
-. "${HOMEgfs}"/ush/load_fv3gfs_modules.sh
+source "${HOMEgfs}/dev/ush/load_modules.sh" run
 status=$?
 if [[ ${status} -ne 0 ]]; then
     exit "${status}"
