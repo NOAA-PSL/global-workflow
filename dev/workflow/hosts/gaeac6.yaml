@@ -32,7 +32,7 @@ USE_SCRONTAB: 'YES'
 HPSS_PROJECT: emc-global
 ARCHCOM_TO: 'aws'
 #ATARDIR: '/NCEPDEV/${HPSS_PROJECT}/1year/${USER}/${machine}/scratch/${PSLOT}'
-ATARDIR: 's3://noaa-reanalyses-pds/analyses/scout_runs/3dvar_coupledreanl_scoutrun_v1'
+ATARDIR: 's3://noaa-reanalyses-pds/analyses/scout_runs/3dvar_coupledreanl_scoutrun_v1.01'
 CHGRP_RSTPROD: 'NO'
 CHGRP_CMD: 'chgrp ira-da'
 # Features
