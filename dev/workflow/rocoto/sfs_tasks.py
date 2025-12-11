@@ -208,11 +208,6 @@ class SFSTasks(Tasks):
 
         fhrs = self._get_forecast_hours(self.run, self._configs[config], component)
 
-        # when replaying, atmos component does not have fhr 0, therefore remove 0 from fhrs
-        is_replay = self._configs[config]['REPLAY_ICS']
-        if is_replay and component in ['atmos'] and 0 in fhrs:
-            fhrs.remove(0)
-
         # ocean/ice components do not have fhr 0 as they are averaged output
         if component in ['ocean', 'ice'] and 0 in fhrs:
             fhrs.remove(0)
@@ -278,11 +273,6 @@ class SFSTasks(Tasks):
 
         fhrs = self._get_forecast_hours(self.run, self._configs['atmos_ensstat'])
 
-        # when replaying, atmos component does not have fhr 0, therefore remove 0 from fhrs
-        is_replay = self._configs['atmos_ensstat']['REPLAY_ICS']
-        if is_replay and 0 in fhrs:
-            fhrs.remove(0)
-
         max_tasks = self._configs['atmos_ensstat']['MAX_TASKS']
         fhr_var_dict = self.get_grouped_fhr_dict(fhrs=fhrs, ngroups=max_tasks)
 
@@ -326,11 +316,6 @@ class SFSTasks(Tasks):
         dependencies = rocoto.create_dependency(dep=deps)
 
         fhrs = self._get_forecast_hours(self.run, self._configs['wavepostsbs'], 'wave')
-
-        # When using replay, output does not start until hour 3
-        is_replay = self._configs['wavepostsbs']['REPLAY_ICS']
-        if is_replay:
-            fhrs = [fhr for fhr in fhrs if fhr not in [0, 1, 2]]
 
         max_tasks = self._configs['wavepostsbs']['MAX_TASKS']
         fhr_var_dict = self.get_grouped_fhr_dict(fhrs=fhrs, ngroups=max_tasks)
@@ -627,6 +612,30 @@ class SFSTasks(Tasks):
 
         return task
 
+    # Globus transfer for HPSS archiving
+    def globus(self):
+        deps = []
+        dep_dict = {'type': 'task', 'name': f'{self.run}_arch_tars'}
+        deps.append(rocoto.add_dependency(dep_dict))
+        dependencies = rocoto.create_dependency(dep=deps)
+
+        resources = self.get_resource('globus')
+        task_name = f'{self.run}_globus_arch'
+        task_dict = {'task_name': task_name,
+                     'resources': resources,
+                     'dependency': dependencies,
+                     'envars': self.envars,
+                     'cycledef': self.run,
+                     'command': f'{self.HOMEgfs}/dev/jobs/globus_arch.sh',
+                     'job_name': f'{self.pslot}_{task_name}_@H',
+                     'log': f'{self.rotdir}/logs/@Y@m@d@H/{task_name}.log',
+                     'maxtries': '&MAXTRIES;'
+                     }
+
+        task = rocoto.create_task(task_dict)
+
+        return task
+
     def cleanup(self):
         deps = []
         dep_dict = {'type': 'metatask', 'name': f'{self.run}_atmos_prod'}
@@ -652,6 +661,13 @@ class SFSTasks(Tasks):
         if self.options['do_extractvars']:
             dep_dict = {'type': 'metatask', 'name': f'{self.run}_extractvars'}
             deps.append(rocoto.add_dependency(dep_dict))
+        if self.options['do_archcom']:
+            if self.options['do_globusarch']:
+                dep_dict = {'type': 'task', 'name': f'{self.run}_globus_arch'}
+            else:
+                dep_dict = {'type': 'task', 'name': f'{self.run}_arch_tars'}
+            deps.append(rocoto.add_dependency(dep_dict))
+            dependencies = rocoto.create_dependency(dep=deps)
         dependencies = rocoto.create_dependency(dep=deps, dep_condition='and')
         resources = self.get_resource('cleanup')
         task_name = f'{self.run}_cleanup'

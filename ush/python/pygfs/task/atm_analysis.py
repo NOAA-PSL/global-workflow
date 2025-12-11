@@ -35,6 +35,7 @@ class AtmAnalysis(Analysis):
 
         _res = int(self.task_config.CASE[1:])
         _res_anl = int(self.task_config.CASE_ANL[1:])
+        _res_his = int(self.task_config.CASE_HIST[1:])
 
         if self.task_config.DOHYBVAR:
             _BERROR_YAML = f"atmosphere_background_error_hybrid_{self.task_config.STATICB_TYPE}_{self.task_config.LOCALIZATION_TYPE}"
@@ -50,6 +51,9 @@ class AtmAnalysis(Analysis):
                 'npx_anl': _res_anl + 1,
                 'npy_anl': _res_anl + 1,
                 'npz_anl': self.task_config.LEVS - 1,
+                'npx_his': _res_his + 1,
+                'npy_his': _res_his + 1,
+                'npz_his': self.task_config.LEVS - 1,
                 'npz': self.task_config.LEVS - 1,
                 'BKG_TSTEP': "PT1H",  # Placeholder for 4D applications
                 'BERROR_YAML': _BERROR_YAML,
@@ -132,7 +136,7 @@ class AtmAnalysis(Analysis):
 
         # Compress and tar diag files in COM directory
         self.tar_diag_files(self.task_config.COMOUT_ATMOS_ANALYSIS,
-                            f"{self.task_config.APREFIX}atmstat")
+                            f"{self.task_config.APREFIX}stat.atm.tar")
 
         # Tar radiative bias correction files into COM directory
         self.tar_radiative_bias_corrections(self.task_config.COMOUT_ATMOS_ANALYSIS,
