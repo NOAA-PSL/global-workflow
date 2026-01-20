@@ -538,4 +538,7 @@ if [[ "${DO_JEDIATMVAR}" == "YES" ]]; then
     fi
 fi
 
+# MOM6 IC setting needed for forecast and stage ics
+export MOM6_INTERP_ICS="{{ MOM6_INTERP_ICS }}"
+
 echo "END: config.base"
