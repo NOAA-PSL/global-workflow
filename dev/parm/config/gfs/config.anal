@@ -26,9 +26,6 @@ if [[ ${LEVS} = "128" ]]; then
   export SETUP="gpstop=55,nsig_ext=45,${SETUP:-}"
 fi
 
-# Set namelist option for LETKF
-export lobsdiag_forenkf=".false."  # anal does not need to write out jacobians
-                                   # set to .true. in config.eobs and config.eupd
 export hofx_2m_sfcfile=".true."
 export ignore_2mQM=".true."
 

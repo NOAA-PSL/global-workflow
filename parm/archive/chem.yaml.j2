@@ -4,4 +4,4 @@ chem:
     target: "{{ ATARDIR }}/{{ cycle_YMDH }}/chem.tar"
     optional:
         # TODO explicitize this set
-        - "{{ COMIN_CHEM_HISTORY | relpath(ROTDIR) }}/{{ head }}*"
+        - "{{ COMIN_CHEM_HISTORY }}/{{ head }}*"

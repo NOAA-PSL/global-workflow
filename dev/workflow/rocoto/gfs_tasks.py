@@ -2073,7 +2073,6 @@ class GFSTasks(Tasks):
                      }
 
         metatask_dict = {'task_name': f'{self.run}_metp',
-                         'is_serial': True,
                          'task_dict': task_dict,
                          'var_dict': var_dict,
                          }
@@ -2217,6 +2216,19 @@ class GFSTasks(Tasks):
                         deps.append(rocoto.add_dependency(dep_dict))
                         dep_dict = {'type': 'metatask', 'name': f'{self.run}_gempakgrb2spec'}
                         deps.append(rocoto.add_dependency(dep_dict))
+
+        if self.options['do_awips'] and self.run in ['gfs']:
+
+            dep_dict = {'type': 'metatask', 'name': f'{self.run}_awips_20km_1p0deg'}
+            deps.append(rocoto.add_dependency(dep_dict))
+            dep_dict = {'type': 'task', 'name': f'{self.run}_fbwind'}
+            deps.append(rocoto.add_dependency(dep_dict))
+
+            if self.options['do_wave']:
+                dep_dict = {'type': 'task', 'name': f'{self.run}_waveawipsbulls'}
+                deps.append(rocoto.add_dependency(dep_dict))
+                dep_dict = {'type': 'task', 'name': f'{self.run}_waveawipsgridded'}
+                deps.append(rocoto.add_dependency(dep_dict))
 
         if self.options['do_metp'] and self.run in ['gfs']:
             deps2 = []
@@ -2805,7 +2817,7 @@ class GFSTasks(Tasks):
     def atmensanlfv3inc(self):
 
         deps = []
-        if self.options['lobsdiag_forenkf']:
+        if self.options['do_jediatmens_split_obssol']:
             dep_dict = {'type': 'task', 'name': f'{self.run}_atmensanlsol'}
         else:
             dep_dict = {'type': 'task', 'name': f'{self.run}_atmensanlletkf'}
