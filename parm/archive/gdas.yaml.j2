@@ -191,7 +191,6 @@ gdas:
         # Forecast Master GRIB2 data for F006
         - "{{ COMIN_ATMOS_MASTER }}/{{ head }}master.f003.grib2"
         - "{{ COMIN_ATMOS_MASTER }}/{{ head }}master.f006.grib2"
-    optional:
         {% if MODE == "cycled" %}
             # Ozone and Radiance diagnostic files may not always be created
             {% if ARCH_CYC == cycle_HH | int %}
