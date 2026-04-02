@@ -1,6 +1,6 @@
 # Paths
 #DMPDIR: '/gpfs/f6/drsa-precip3/world-shared/role.glopara/dump'
-DMPDIR: '/gpfs/f6/ira-da/proj-shared/Joao.Souza/obs' #'/gpfs/f6/ira-da/proj-shared/dumps' #'/gpfs/f6/ira-da/proj-shared/Jeffrey.S.Whitaker/dumps' #'/gpfs/f6/ira-da/world-shared/replayics/C192mx025'
+DMPDIR: '/gpfs/f6/ira-da/world-shared/Joao.Souza/obs' #'/gpfs/f6/ira-da/proj-shared/dumps' #'/gpfs/f6/ira-da/proj-shared/Jeffrey.S.Whitaker/dumps' #'/gpfs/f6/ira-da/world-shared/replayics/C192mx025'
 IODADIR: '/gpfs/f6/drsa-precip3/world-shared/role.glopara/dump_ioda'
 BASE_GIT: '/gpfs/f6/drsa-precip3/world-shared/role.glopara/git'
 BASE_DATA: '/gpfs/f6/drsa-precip3/world-shared/role.glopara/data'
