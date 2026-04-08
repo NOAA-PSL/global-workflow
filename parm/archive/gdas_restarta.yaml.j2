@@ -1,7 +1,7 @@
 gdas_restarta:
     {% set head = "gdas.t" + cycle_HH + "z." %}
     name: "GDAS_RESTARTA"
-    target: "{{ ATARDIR }}/{{ cycle_YMDH }}/gdas_restarta.tar"
+    target: "{{ ATARDIR }}/{{ cycle_YY }}/{{ cycle_MM }}/{{ cycle_YMDH }}/gdas_restarta.tar"
     optional:
         # Deterministic analysis increments
         {% if DO_JEDIATMVAR and not (ATMINC_GRID == 'gaussian') %}

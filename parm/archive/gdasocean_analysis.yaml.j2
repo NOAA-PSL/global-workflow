@@ -1,7 +1,7 @@
 gdasocean_analysis:
     {% set head = "gdas.t" + cycle_HH + "z." %}
     name: "GDASOCEAN_ANALYSIS"
-    target: "{{ ATARDIR }}/{{ cycle_YMDH }}/gdasocean_analysis.tar"
+    target: "{{ ATARDIR }}/{{ cycle_YY }}/{{ cycle_MM }}/{{ cycle_YMDH }}/gdasocean_analysis.tar"
     optional:
         {# anl_time_YMD and anl_time_HH are pre-calculated in Python: -3H if DOIAU, 0H otherwise #}
         # analysis and analysis increments

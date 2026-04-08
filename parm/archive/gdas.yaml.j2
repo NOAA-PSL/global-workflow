@@ -1,7 +1,7 @@
 gdas:
     {% set head = "gdas.t" + cycle_HH + "z." %}
     name: "GDAS"
-    target: "{{ ATARDIR }}/{{ cycle_YMDH }}/gdas.tar"
+    target: "{{ ATARDIR }}/{{ cycle_YY }}/{{ cycle_MM }}/{{ cycle_YMDH }}/gdas.tar"
     optional:
         {% if MODE == "cycled" %}
         # Cycled logs
