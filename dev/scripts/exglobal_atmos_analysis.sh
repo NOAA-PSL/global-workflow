@@ -481,6 +481,7 @@ ${NLN} "${RAPIDSCATBF}" rapidscatbufr
 ${NLN} "${GSNDBF}" gsndrbufr
 ${NLN} "${GSNDBF1}" gsnd1bufr
 ${NLN} "${B1MSU}" msubufr
+${NLN} "${B1SSU}" ssubufr
 ${NLN} "${B1AMUA}" amsuabufr
 ${NLN} "${B1AMUB}" amsubbufr
 ${NLN} "${B1MHS}" mhsbufr
