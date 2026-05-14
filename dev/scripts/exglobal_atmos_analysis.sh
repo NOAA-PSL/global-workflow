@@ -889,6 +889,13 @@ fi
 # Cat runtime output files.
 cat fort.2* > "${GSISTAT}"
 
+# copy generated *info files to output directory.
+if [[ "${SATINFO}" == "generate" ]]; then
+    cpfs satinfo ${COMOUT_ATMOS_ANALYSIS}/global_satinfo.txt
+    cpfs convinfo ${COMOUT_ATMOS_ANALYSIS}/global_convinfo.txt
+    cpfs ozinfo ${COMOUT_ATMOS_ANALYSIS}/global_ozinfo.txt
+fi
+
 # If requested, create obsinput tarball from obs_input.* files
 if [[ ${RUN_SELECT} == "YES" ]]; then
     echo "$(date) START tar obs_input" >&2
