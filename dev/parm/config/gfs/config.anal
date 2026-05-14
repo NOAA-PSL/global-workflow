@@ -35,10 +35,10 @@ if [[ ${DO_TEST_MODE} = "YES" ]]; then
 fi
 
 # Do not process the following datasets
-export GSNDBF=${GSNDBF:-/dev/null}
-export AMSREBF=${AMSREBF:-/dev/null}
+#export GSNDBF=${GSNDBF:-/dev/null}
+#export AMSREBF=${AMSREBF:-/dev/null}
 #export SSMITBF=${SSMITBF:-/dev/null}
-export AMSR2BF=${AMSR2BF:-/dev/null}
+#export AMSR2BF=${AMSR2BF:-/dev/null}
 
 
 # Set default values for info files and observation error
