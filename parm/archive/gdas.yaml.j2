@@ -85,6 +85,11 @@ gdas:
         # End of ensemble-resolution mean analyses
             {% endif %}
 
+        # GSI info
+        - "{{ COMIN_ATMOS_ANALYSIS }}/global_satinfo.txt"
+        - "{{ COMIN_ATMOS_ANALYSIS }}/global_convinfo.txt"
+        - "{{ COMIN_ATMOS_ANALYSIS }}/global_ozinfo.txt"
+
         # Analysis state
             {% if DO_JEDIATMVAR %}
         - "{{ COMIN_CONF }}/{{ head }}anlvar.atm.yaml"
