@@ -12,7 +12,7 @@ if [[ ${DONST} = "YES" ]]; then
   source "${EXPDIR}/config.nsst"
 fi
 
-export USE_RADSTAT="NO"
+#export USE_RADSTAT="NO"
 if [[ "${RUN}" == "gfs" ]] ; then
 #  export USE_RADSTAT="NO" # This can be only used when bias correction is not-zero.
   export GENDIAG="NO"
