@@ -5,8 +5,6 @@
 # Set up Local Variables
 #
 
-source "${HOMEglobal}/ush/preamble.sh"
-
 rm -Rf "${DATA}/GEMPAK_META_MAR"
 mkdir -p -m 775 "${DATA}/GEMPAK_META_MAR" "${DATA}/MAR_COMP"
 
@@ -18,8 +16,18 @@ mkdir -p "${COMIN}"
 for cycle in $(seq -f "%02g" -s ' ' 0 "${INTERVAL_GFS}" "${cyc}"); do
     gempak_dir="${ROTDIR}/${RUN}.${PDY}/${cycle}/products/atmos/gempak/1p00"
     for file_in in "${gempak_dir}/gfs_1p00_${PDY}${cycle}f"*; do
-        file_out="${COMIN}/$(basename "${file_in}")"
-        cpreq "${file_in}" "${file_out}"
+        # Only copy the file if it exists (it will not if we start on 6, 12, or 18z)
+        if [[ ! -f "${file_in}" ]]; then
+            echo "WARNING: ${file_in} does not exist, skipping"
+        else
+            file_out="${COMIN}/$(basename "${file_in}")"
+            # Only create new files, do not overwrite existing
+            if [[ ! -f "${file_out}" ]]; then
+                cpreq "${file_in}" "${file_out}"
+            else
+                echo "WARNING: ${file_out} already exists, skipping"
+            fi
+        fi
     done
 done
 
@@ -28,10 +36,8 @@ done
 # TODO: Replace this
 #
 export HPCNAM="nam.${PDY}"
-if [[ ! -L ${HPCNAM} ]]; then
-    # TODO: remove live links and refer https://github.com/NOAA-EMC/global-workflow/issues/4406
-    ${NLN} "${COMINnam}/nam.${PDY}/gempak" "${HPCNAM}"
-fi
+# TODO: remove live links and refer https://github.com/NOAA-EMC/global-workflow/issues/4406
+${NLN} "${COMINnam}/nam.${PDY}/gempak" "${HPCNAM}"
 
 mdl=gfs
 MDL="GFS"
@@ -77,10 +83,9 @@ for garea in NAtl NPac; do
         # TODO: Add only necessary files and remove unneeded ones to minimize data volume
         # TODO: remove live links and refer https://github.com/NOAA-EMC/global-workflow/issues/4406
         HPCGFS="${RUN}.${init_time}"
-        if [[ ! -L ${HPCGFS} ]]; then
-            source_dir="${ROTDIR}/${RUN}.${init_PDY}/${init_cyc}/products/atmos/gempak/1p00"
-            ${NLN} "${source_dir}" "${HPCGFS}"
-        fi
+        rm -f "${HPCGFS}"
+        source_dir="${ROTDIR}/${RUN}.${init_PDY}/${init_cyc}/products/atmos/gempak/1p00"
+        ${NLN} "${source_dir}" "${HPCGFS}"
 
         case ${cyc} in
             00 | 12)
@@ -488,7 +493,7 @@ if [[ "${err}" -ne 0 ]] || [[ ! -s "${metaname}" ]] &> /dev/null; then
     exit $((err + 100))
 fi
 
-mv "${metaname}" "${COMOUT_ATMOS_GEMPAK_META}/${mdl}_${PDY}_${cyc}_mar_comp"
+cpfs "${metaname}" "${COMOUT_ATMOS_GEMPAK_META}/${mdl}_${PDY}_${cyc}_mar_comp"
 if [[ "${SENDDBN}" == "YES" ]]; then
     "${DBNROOT}/bin/dbn_alert MODEL" "${DBN_ALERT_TYPE}" "${job}" \
         "${COMOUT_ATMOS_GEMPAK_META}/${mdl}_${PDY}_${cyc}_mar_comp"

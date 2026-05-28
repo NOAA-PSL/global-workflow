@@ -19,7 +19,6 @@ class Archive(Task):
     """Task to archive ROTDIR data to HPSS (or locally)
     """
 
-    @logit(logger, name="Archive")
     def __init__(self, config: AttrDict) -> None:
         """Constructor for the Archive task
 
@@ -590,7 +589,6 @@ class Archive(Task):
         out_track_p_file = track_dir_out + "/atcfunixp." + run + "." + to_YMDH(arch_dict.current_cycle)
 
         def replace_string_from_to_file(filename_in, filename_out, search_str, replace_str):
-
             """Write a new file from the contents of an input file while searching
             and replacing ASCII strings.  To prevent partial file creation, a
             temporary file is created and moved to the final location only

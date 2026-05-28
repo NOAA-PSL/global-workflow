@@ -25,8 +25,7 @@ function _usage() {
     -u Update submodules before building and/or generating experiments.
 
     -y "list of YAMLs to run"
-       If this option is not specified, the default case (C48_ATM) will be
-       run.  This option is incompatible with -G, -E, or -S.
+       This option is incompatible with -G, -E, -S, or -C.
        Example: -y "C48_ATM C48_S2SW C96C48_hybatmDA"
 
     -D Delete the RUNTESTS and DATAROOT directories if they already exist
@@ -57,6 +56,10 @@ function _usage() {
        \$HOMEglobal/dev/ci/platform/config.\$machine
        will be used.
 
+    -I "/path/to/base_ic"  Override BASE_IC for all cases.
+       If this is not set, BASE_IC is read from the hosts YAML
+       (\$HOMEglobal/dev/workflow/hosts/\$machine.yaml).
+
     -c Append the chosen set of tests to your existing crontab
        If this option is not chosen, the new entries that would have been
        written to your crontab will be printed to stdout.
@@ -83,6 +86,9 @@ EOF
 
 set -eu
 
+# --------------------------------------------------------------------------- #
+# Defaults and Runtime State
+# --------------------------------------------------------------------------- #
 # Set default options
 HOMEglobal=""
 _specified_home=false
@@ -90,7 +96,7 @@ _build=false
 _compute_build=false
 _build_flags=""
 _update_submods=false
-declare -a _yaml_list=("C48_ATM")
+declare -a _yaml_list=()
 _specified_yaml_list=false
 _yaml_dir="" # Will be set based off of HOMEglobal if not specified explicitly
 _specified_yaml_dir=false
@@ -100,6 +106,8 @@ _run_all_sfs=false
 _run_all_gcafs=false
 _hpc_account=""
 _set_account=false
+_base_ic=""
+_set_base_ic=false
 _update_cron=false
 _email=""
 _tag=""
@@ -112,71 +120,102 @@ _cwd=$(pwd)
 _runtests="${RUNTESTS:-${_runtests:-}}"
 _auto_del=false
 _nonflag_option_count=0
+_use_scron=false
+declare -a _scron_sh_files=()
+# --------------------------------------------------------------------------- #
+# Argument Parsing
+# --------------------------------------------------------------------------- #
 
-while [[ $# -gt 0 && "$1" != "--" ]]; do
-    while getopts ":H:bBDuy:Y:GESCA:ce:t:vVdh" option; do
-        case "${option}" in
-            H)
-                HOMEglobal="${OPTARG}"
-                _specified_home=true
-                if [[ ! -d "${HOMEglobal}" ]]; then
-                    echo "Specified HOMEglobal directory (${HOMEglobal}) does not exist"
-                    exit 1
-                fi
-                ;;
-            b) _build=true ;;
-            B) _build=true && _compute_build=true ;;
-            D) _auto_del=true ;;
-            u) _update_submods=true ;;
-            y) # Start over with an empty _yaml_list
-                declare -a _yaml_list=()
-                for _yaml in ${OPTARG}; do
-                    # Strip .yaml from the end of each and append to _yaml_list
-                    _yaml_list+=("${_yaml//.yaml/}")
-                done
-                _specified_yaml_list=true
-                ;;
-            Y) _yaml_dir="${OPTARG}" && _specified_yaml_dir=true ;;
-            G) _run_all_gfs=true ;;
-            E) _run_all_gefs=true ;;
-            S) _run_all_sfs=true ;;
-            C) _run_all_gcafs=true ;;
-            c) _update_cron=true ;;
-            e) _email="${OPTARG}" && _set_email=true ;;
-            t) _tag="_${OPTARG}" ;;
-            v) _verbose=true ;;
-            V) _very_verbose=true && _verbose=true && _verbose_flag="-v" ;;
-            A) _set_account=true && _hpc_account="${OPTARG}" ;;
-            d) _debug=true && _very_verbose=true && _verbose=true && _verbose_flag="-v" && PS4='${LINENO}: ' ;;
-            h) _usage && exit 0 ;;
-            :)
-                echo "[${BASH_SOURCE[0]}]: ${option} requires an argument"
-                _usage
-                exit 1
-                ;;
-            *)
-                echo "[${BASH_SOURCE[0]}]: Unrecognized option: ${option}"
-                _usage
-                exit 1
-                ;;
-        esac
+function _set_yaml_list_from_arg() {
+    # Start over with an empty list and normalize names to no .yaml suffix.
+    _yaml_list=()
+    for _yaml in ${OPTARG}; do
+        _yaml_list+=("${_yaml//.yaml/}")
     done
+    _specified_yaml_list=true
+}
 
-    if [[ ${OPTIND:-0} -gt 0 ]]; then
-        shift $((OPTIND - 1))
-    fi
+function _parse_option() {
+    case "${option}" in
+        # Core paths and build mode
+        H)
+            HOMEglobal="${OPTARG}"
+            _specified_home=true
+            if [[ ! -d "${HOMEglobal}" ]]; then
+                echo "Specified HOMEglobal directory (${HOMEglobal}) does not exist"
+                exit 1
+            fi
+            ;;
+        b) _build=true ;;
+        B) _build=true && _compute_build=true ;;
+        D) _auto_del=true ;;
+        u) _update_submods=true ;;
 
-    while [[ $# -gt 0 && ! "$1" =~ ^- ]]; do
-        _runtests=${1}
-        ((_nonflag_option_count += 1))
-        if [[ ${_nonflag_option_count} -gt 1 ]]; then
-            echo "Too many arguments specified."
+        # Test/case selection
+        y) _set_yaml_list_from_arg ;;
+        Y) _yaml_dir="${OPTARG}" && _specified_yaml_dir=true ;;
+        G) _run_all_gfs=true ;;
+        E) _run_all_gefs=true ;;
+        S) _run_all_sfs=true ;;
+        C) _run_all_gcafs=true ;;
+
+        # Workflow behavior and notifications
+        c) _update_cron=true ;;
+        e) _email="${OPTARG}" && _set_email=true ;;
+        t) _tag="_${OPTARG}" ;;
+        I) _set_base_ic=true && _base_ic="${OPTARG}" ;;
+
+        # Logging/debug
+        v) _verbose=true ;;
+        V) _very_verbose=true && _verbose=true && _verbose_flag="-v" ;;
+        d) _debug=true && _very_verbose=true && _verbose=true && _verbose_flag="-v" && PS4='${LINENO}: ' ;;
+
+        # HPC account and usage
+        A) _set_account=true && _hpc_account="${OPTARG}" ;;
+        h) _usage && exit 0 ;;
+
+        :)
+            echo "[${BASH_SOURCE[0]}]: ${option} requires an argument"
             _usage
-            exit 2
+            exit 1
+            ;;
+        *)
+            echo "[${BASH_SOURCE[0]}]: Unrecognized option: ${option}"
+            _usage
+            exit 1
+            ;;
+    esac
+}
+
+function _parse_args() {
+    while [[ $# -gt 0 && "$1" != "--" ]]; do
+        while getopts ":H:bBDuy:Y:GESCA:I:ce:t:vVdh" option; do
+            _parse_option
+        done
+
+        if [[ ${OPTIND:-0} -gt 0 ]]; then
+            shift $((OPTIND - 1))
+            OPTIND=1
         fi
-        shift
+
+        while [[ $# -gt 0 && ! "$1" =~ ^- ]]; do
+            _runtests=${1}
+            ((_nonflag_option_count += 1))
+            if [[ ${_nonflag_option_count} -gt 1 ]]; then
+                echo "Too many arguments specified."
+                _usage
+                exit 2
+            fi
+            shift
+        done
     done
-done
+}
+
+_parse_args "$@"
+
+# --------------------------------------------------------------------------- #
+# Common Helpers
+# --------------------------------------------------------------------------- #
 
 function send_email() {
     # Send an email to $_email.
@@ -226,6 +265,10 @@ function delete_dir() {
     done
 }
 
+# --------------------------------------------------------------------------- #
+# Validate Required Inputs
+# --------------------------------------------------------------------------- #
+
 if [[ -z "${_runtests}" ]]; then
     echo "Missing run directory (RUNTESTS) argument/environment variable."
     sleep 2
@@ -237,6 +280,10 @@ fi
 if [[ "${_debug}" == "true" ]]; then
     set -x
 fi
+
+# --------------------------------------------------------------------------- #
+# Prepare RUNTESTS Directory
+# --------------------------------------------------------------------------- #
 
 # Create the RUNTESTS directory
 # Start by getting the full path
@@ -262,6 +309,21 @@ else
     fi
 fi
 
+# --------------------------------------------------------------------------- #
+# Resolve Initial Case Selection
+# --------------------------------------------------------------------------- #
+
+# Check that at least one case was selected via -y or -G, -E, -S, -C
+if [[ "${_specified_yaml_list}" == "false" && "${_run_all_gfs}" == "false" &&
+    "${_run_all_gefs}" == "false" && "${_run_all_gcafs}" == "false" &&
+    "${_run_all_sfs}" == "false" ]]; then
+
+    echo "No cases selected to run!"
+    echo "Please select which case(s) to run explicitly with -y \"list of case(s)\" or"
+    echo "by specifying -G (all GFS), -E (all GEFS), -C (all GCAFS) and/or -S (all SFS)."
+    exit 3
+fi
+
 # Empty the _yaml_list array if -G, -E, -S and/or -C were selected
 if [[ "${_run_all_gfs}" == "true" ||
     "${_run_all_gefs}" == "true" ||
@@ -276,7 +338,6 @@ if [[ "${_run_all_gfs}" == "true" ||
         exit 3
     fi
 
-    _yaml_list=()
 fi
 
 # Set HOMEglobal if it wasn't set by the user
@@ -292,6 +353,10 @@ fi
 if [[ "${_specified_yaml_dir}" == false ]]; then
     _yaml_dir="${HOMEglobal}/dev/ci/cases/pr"
 fi
+
+# --------------------------------------------------------------------------- #
+# Case Discovery Helper
+# --------------------------------------------------------------------------- #
 
 function select_all_yamls() {
     # A helper function to select all of the YAMLs for a specified system (gfs, gefs, sfs)
@@ -355,6 +420,10 @@ EOM
     fi
 }
 
+# --------------------------------------------------------------------------- #
+# Expand Case List By System Flags
+# --------------------------------------------------------------------------- #
+
 # Check if running all GEFS cases
 if [[ "${_run_all_gefs}" == "true" ]]; then
     # Append -w to build_all.sh flags if -E was specified
@@ -392,6 +461,10 @@ if [[ "${_run_all_gcafs}" == "true" ]]; then
     _yaml_list=("${_yaml_list[@]}" "${_gcafs_yaml_list[@]}")
 fi
 
+# --------------------------------------------------------------------------- #
+# Optional Submodule Update
+# --------------------------------------------------------------------------- #
+
 # Update submodules if requested
 if [[ "${_update_submods}" == "true" ]]; then
     printf "Updating submodules\n\n"
@@ -418,6 +491,10 @@ EOM
     fi
 fi
 
+# --------------------------------------------------------------------------- #
+# Load Workflow Environment
+# --------------------------------------------------------------------------- #
+
 # Loading modules sometimes raises unassigned errors, so disable checks
 set +u
 if [[ "${_verbose}" == "true" ]]; then
@@ -440,26 +517,49 @@ if [[ "${_debug}" == "true" ]]; then
 fi
 set -u
 machine=${MACHINE_ID}
-platform_config="${HOMEglobal}/dev/ci/platforms/config.${machine}"
-if [[ -f "${platform_config}" ]]; then
-    source "${HOMEglobal}/dev/ci/platforms/config.${machine}"
-else
-    if [[ "${_set_account}" == "false" ]]; then
-        echo "ERROR Unknown HPC account!  Please use the -A option to specify."
-        exit 11
-    fi
-fi
 
 # If _yaml_dir is not set, set it to $HOMEglobal/dev/ci/cases/pr
 if [[ -z ${_yaml_dir} ]]; then
     _yaml_dir="${HOMEglobal}/dev/ci/cases/pr"
 fi
 
+# --------------------------------------------------------------------------- #
+# Resolve HPC Account
+# --------------------------------------------------------------------------- #
+
+# Update the account: -A flag > existing env var > platform config default
+if [[ "${_set_account}" == true ]]; then
+    export HPC_ACCOUNT="${_hpc_account}"
+    if [[ "${_verbose}" == true ]]; then
+        printf "Setting HPC account to %s\n\n" "${HPC_ACCOUNT}"
+    fi
+elif [[ -z "${HPC_ACCOUNT:-}" ]]; then
+    platform_config="${HOMEglobal}/dev/ci/platforms/config.${machine}"
+    if [[ -f "${platform_config}" ]]; then
+        _platform_account=$(sed -n "s/^export HPC_ACCOUNT=\${HPC_ACCOUNT:-\([^}]*\)}.*/\1/p" "${platform_config}")
+        export HPC_ACCOUNT="${_platform_account}"
+        if [[ "${_verbose}" == true ]]; then
+            printf "Setting HPC account to %s from platform config\n\n" "${HPC_ACCOUNT}"
+        fi
+    else
+        echo "ERROR Unknown HPC account! Please use the -A option to specify."
+        exit 11
+    fi
+fi
+
+# --------------------------------------------------------------------------- #
+# Build and Link Workflow
+# --------------------------------------------------------------------------- #
+
 # Build the system if requested
 if [[ "${_build}" == "true" ]]; then
     printf "Building via build_all.sh %s\n\n" "${_build_flags}"
     # Let the output of build_all.sh go to stdout regardless of verbose options
     if [[ "${_compute_build}" == true ]]; then
+        if [[ -z "${HPC_ACCOUNT:-}" ]]; then
+            echo "ERROR Unknown HPC account!  Please use the -A option to specify."
+            exit 11
+        fi
         _compute_build_flag="-c -A ${HPC_ACCOUNT}"
     fi
     #shellcheck disable=SC2086,SC2248
@@ -481,6 +581,10 @@ if ! "${HOMEglobal}/sorc/link_workflow.sh" >&stdout; then
     exit 9
 fi
 rm -f stdout
+
+# --------------------------------------------------------------------------- #
+# Validate YAML Inputs For This Host
+# --------------------------------------------------------------------------- #
 
 # Configure the environment for running create_experiment.py
 if [[ "${_verbose}" == true ]]; then
@@ -521,13 +625,21 @@ EOM
     done
 done
 
-# Update the account if specified
-if [[ "${_set_account}" == true ]]; then
-    export HPC_ACCOUNT=${_hpc_account}
+# --------------------------------------------------------------------------- #
+# Apply BASE_IC Override
+# --------------------------------------------------------------------------- #
+
+# Override BASE_IC if specified via -I
+if [[ "${_set_base_ic}" == true ]]; then
+    export BASE_IC="${_base_ic}"
     if [[ "${_verbose}" == true ]]; then
-        printf "Setting HPC account to %s\n\n" "${HPC_ACCOUNT}"
+        printf "Overriding BASE_IC to %s\n\n" "${BASE_IC}"
     fi
 fi
+
+# --------------------------------------------------------------------------- #
+# Create Experiments and Collect Schedule Entries
+# --------------------------------------------------------------------------- #
 
 # Create the experiments
 rm -f "tests.cron" "${_verbose_flag}"
@@ -595,16 +707,78 @@ for _case in "${_yaml_list[@]}"; do
     fi
 
     if [[ "${_use_scron}" == true ]]; then
-        {
-            grep "^####" "${cron_file}"
-            grep "^#SCRON" "${cron_file}"
-            grep "${scron_sh_file}" "${cron_file}"
-        } >> tests.cron
+        # Collect this experiment's scron script path; the master runner script
+        # will call them all sequentially to reduce simultaneous rocoto instances.
+        _scron_sh_files+=("${scron_sh_file}")
     else
         grep "${_pslot}" "${_runtests}/EXPDIR/${_pslot}/${_pslot}.crontab" >> tests.cron
     fi
 done
 echo
+
+# --------------------------------------------------------------------------- #
+# Build Master Runner Script for scrontab (if using scron)
+# --------------------------------------------------------------------------- #
+
+# When running on a SLURM-managed scron system (e.g. Gaea), running all rocoto
+# instances simultaneously can exhaust head-node memory.  Instead, generate a
+# single master script that cycles through every experiment scron script
+# sequentially, and place only that one entry in the scrontab.
+if [[ "${_use_scron}" == true && ${#_scron_sh_files[@]} -gt 0 ]]; then
+    _master_script="${_runtests}/EXPDIR/rocoto_master_run.sh"
+    {
+        printf '%s\n' '#!/usr/bin/env bash'
+        printf '%s\n' '# Master runner script - cycles through all experiments sequentially'
+        printf '%s\n' '# to reduce simultaneous rocoto instances on the head node.'
+        for _scron_sh in "${_scron_sh_files[@]}"; do
+            printf 'if [[ -x "%s" ]]; then\n' "${_scron_sh}"
+            printf '    "%s"\n' "${_scron_sh}"
+            printf '%s\n' 'fi'
+        done
+    } > "${_master_script}"
+    chmod +x "${_master_script}"
+
+    # Guard: _yaml_list must be non-empty if _scron_sh_files is non-empty,
+    # but verify explicitly to surface any unexpected state.
+    if [[ ${#_yaml_list[@]} -eq 0 ]]; then
+        echo "ERROR: _yaml_list is empty but scron scripts were collected. This is unexpected."
+        exit 14
+    fi
+
+    # Pull partition and account from the first experiment's crontab (note that cases can be removed, so we must search)
+    _indexes=("${!_yaml_list[@]}")
+    _first_index="${_indexes[0]}"
+    _first_pslot="${_yaml_list[${_first_index}]}${_tag}"
+    _first_cron_file="${_runtests}/EXPDIR/${_first_pslot}/${_first_pslot}.crontab"
+    _master_log="${_runtests}/EXPDIR/rocoto_master_run.log"
+
+    _scron_partition=$(grep "^#SCRON --partition=" "${_first_cron_file}" | head -1)
+    _scron_account=$(grep "^#SCRON --account=" "${_first_cron_file}" | head -1)
+    if [[ -z "${_scron_partition}" || -z "${_scron_account}" ]]; then
+        echo "ERROR: Could not find #SCRON --partition= or #SCRON --account= in ${_first_cron_file}"
+        exit 15
+    fi
+
+    master_job_name="master_scron${_tag}"
+
+    {
+        echo
+        echo "#################### ${master_job_name} ####################"
+        echo "${_scron_partition}"
+        echo "${_scron_account}"
+        echo "#SCRON --job-name=${master_job_name}"
+        echo "#SCRON --output=${_master_log}"
+        echo "#SCRON --time=00:10:00"
+        echo "#SCRON --dependency=singleton"
+        echo "*/5 * * * * ${_master_script}"
+        echo "#################################################################"
+        echo
+    } >> tests.cron
+fi
+
+# --------------------------------------------------------------------------- #
+# Configure Mail Behavior
+# --------------------------------------------------------------------------- #
 
 # Add MAILTO to tests.cron for regular crontab
 if [[ "${_use_scron}" == false ]]; then
@@ -619,6 +793,10 @@ if [[ "${_use_scron}" == false ]]; then
         sed -i "1i MAILTO=\"\"" tests.cron
     fi
 fi
+
+# --------------------------------------------------------------------------- #
+# Install or Print Scheduler Entries
+# --------------------------------------------------------------------------- #
 
 # Update the cron
 if [[ "${_update_cron}" == "true" ]]; then
@@ -697,6 +875,10 @@ else
         final_message="${final_message:-}"$'\n'"${_message}"
     fi
 fi
+
+# --------------------------------------------------------------------------- #
+# Cleanup and Completion
+# --------------------------------------------------------------------------- #
 
 # Cleanup
 if [[ "${_debug}" == "false" ]]; then

@@ -71,12 +71,11 @@ rm -f cur.nc
 ${NLN} "cur_glo_uv_${PDY}_${fext}${fh3}_5min.nc" "cur.nc"
 ${NLN} "${DATA}/mod_def.${WAVECUR_FID}" ./mod_def.ww3
 
-export pgm="${NET,,}_ww3_prnc.x"
+export pgm="ww3_prnc_${NET,,}.x"
 source prep_step
 
 "${EXECglobal}/${pgm}" 1> "prnc_${WAVECUR_FID}_${ymdh_rtofs}.out" 2>&1
 export err=$?
-err_chk
 if [[ "${err}" -ne 0 ]]; then
     cat "prnc_${WAVECUR_FID}_${ymdh_rtofs}.out"
     echo "WARNING: NON-FATAL ERROR IN ${pgm}."

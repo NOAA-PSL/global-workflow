@@ -13,6 +13,9 @@ source "${HOMEglobal}/ush/jjob_standard_vars.sh"
 #{% endif %}
 
 source "${USHglobal}/jjob_shell_setup.sh"
+# Set strict mode which will exit on error or undefined variable
+# and exit on error in a pipeline (e.g. if a command in "cmd | cmd2" fails)
+source "${USHglobal}/set_strict.sh"
 
 #############################################
 #  determine PDY and cyc for previous cycle
@@ -39,7 +42,7 @@ if [[ ! -d ${TANKverf_ozn} ]]; then mkdir -p "${TANKverf_ozn}"; fi
 "${SCRglobal}/exgdas_atmos_verfozn.sh" && true
 export err=$?
 if [[ ${err} -ne 0 ]]; then
-    err_exit
+    err_exit "Failed to generate ozone monitor products"
 fi
 
 ################################

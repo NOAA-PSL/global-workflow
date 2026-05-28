@@ -15,6 +15,9 @@ source "${HOMEglobal}/ush/jjob_standard_vars.sh"
 #{% endif %}
 
 source "${USHglobal}/jjob_shell_setup.sh"
+# Set strict mode which will exit on error or undefined variable
+# and exit on error in a pipeline (e.g. if a command in "cmd | cmd2" fails)
+source "${USHglobal}/set_strict.sh"
 
 export OMP_NUM_THREADS=${OMP_NUM_THREADS:-1}
 
@@ -33,7 +36,7 @@ mkdir -m 775 -p "${COMOUT_ATMOS_GOES}"
 "${SCRglobal}/exgfs_atmos_grib2_special_npoess.sh" && true
 export err=$?
 if [[ ${err} -ne 0 ]]; then
-    err_exit
+    err_exit "Failed to simulate NPOESS data from GFS GRIB2 products"
 fi
 #############################################################
 

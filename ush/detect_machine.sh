@@ -34,10 +34,8 @@ case $(hostname -f) in
     ufe1[0-6]) MACHINE_ID=ursa ;; ### ursa10-16
     uecflow01) MACHINE_ID=ursa ;; ### ursaecflow01
 
-    s4-submit.ssec.wisc.edu) MACHINE_ID=s4 ;; ### s4
-
-    fe[1-8]) MACHINE_ID=jet ;; ### jet01-8
-    tfe[12]) MACHINE_ID=jet ;; ### tjet1-2
+    derecho[1-8].hsn.de.hpc.ucar.edu) MACHINE_ID=derecho ;; ### derecho1-8
+    dec*) MACHINE_ID=derecho ;;                             ### derech compute node
 
     Orion-login-[1-4].HPC.MsState.Edu) MACHINE_ID=orion ;; ### orion1-4
 
@@ -74,9 +72,6 @@ if [[ -d /lfs/h3 ]]; then
 elif [[ -d /lfs/h1 && ! -d /lfs/h3 ]]; then
     # We are on NOAA TDS Acorn
     MACHINE_ID=acorn
-elif [[ -d /mnt/lfs5 ]]; then
-    # We are on NOAA Jet
-    MACHINE_ID=jet
 elif [[ -d /scratch3 ]]; then
     # We are on NOAA Hera or Ursa
     mount=$(findmnt -n -o SOURCE /apps) || true # /home doesn't exist on the GitHub runners
@@ -101,6 +96,9 @@ elif [[ -d /gpfs/f6 ]]; then
 elif [[ -d /data/prod ]]; then
     # We are on SSEC's S4
     MACHINE_ID=s4
+elif [[ -d /glade/u ]]; then
+    # We are on DERECHO.
+    MACHINE_ID=derecho
 else
     echo WARNING: UNKNOWN PLATFORM 1>&2
 fi

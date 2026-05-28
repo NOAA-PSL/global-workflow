@@ -10,6 +10,9 @@ source "${HOMEglobal}/ush/jjob_standard_vars.sh"
 #{% endif %}
 
 source "${USHglobal}/jjob_shell_setup.sh"
+# Set strict mode which will exit on error or undefined variable
+# and exit on error in a pipeline (e.g. if a command in "cmd | cmd2" fails)
+source "${USHglobal}/set_strict.sh"
 
 ##############################################
 # Set variables used in the script
@@ -38,7 +41,7 @@ EXSCRIPT=${GDASAEROBMATPY:-${SCRglobal}/exgdas_aero_analysis_generate_bmatrix.py
 ${EXSCRIPT} && true
 export err=$?
 if [[ ${err} -ne 0 ]]; then
-    err_exit
+    err_exit "Failed to generate bmatrix for aerosol analysis"
 fi
 
 ##############################################
@@ -58,7 +61,7 @@ fi
 cd "${DATAROOT}" && true
 export err=$?
 if [[ ${err} -ne 0 ]]; then
-    err_exit
+    err_exit "Failed to change directory to ${DATAROOT}"
 fi
 if [[ "${KEEPDATA}" == "NO" ]]; then
     rm -rf "${DATA}"

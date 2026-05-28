@@ -21,6 +21,9 @@ source "${HOMEglobal}/ush/jjob_standard_vars.sh"
 #{% endif %}
 
 source "${USHglobal}/jjob_shell_setup.sh"
+# Set strict mode which will exit on error or undefined variable
+# and exit on error in a pipeline (e.g. if a command in "cmd | cmd2" fails)
+source "${USHglobal}/set_strict.sh"
 
 ##############################################
 # Set variables used in the script
@@ -69,7 +72,7 @@ EXSCRIPT=${GDASMARINEBMATRUNPY:-${SCRglobal}/exglobal_marinebmat_initialize.py}
 ${EXSCRIPT} && true
 export err=$?
 if [[ ${err} -ne 0 ]]; then
-    err_exit
+    err_exit "Failed to initialize the marine background error covariance matrix"
 fi
 ##############################################
 # End JOB SPECIFIC work

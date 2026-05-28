@@ -14,6 +14,9 @@ source "${HOMEglobal}/ush/jjob_standard_vars.sh"
 #{% endif %}
 
 source "${USHglobal}/jjob_shell_setup.sh"
+# Set strict mode which will exit on error or undefined variable
+# and exit on error in a pipeline (e.g. if a command in "cmd | cmd2" fails)
+source "${USHglobal}/set_strict.sh"
 
 ##############################################
 # Set variables used in the script
@@ -55,7 +58,7 @@ EXSCRIPT=${GDASOCNCENPY:-${HOMEglobal}/scripts/exglobal_marine_analysis_ecen.py}
 ${EXSCRIPT} && true
 export err=$?
 if [[ ${err} -ne 0 ]]; then
-    err_exit
+    err_exit "Failed to recenter the ocean and/or ice analyses"
 fi
 
 ##############################################
@@ -75,7 +78,7 @@ fi
 cd "${DATAROOT/enkf/}" && true
 export err=$?
 if [[ ${err} -ne 0 ]]; then
-    err_exit
+    err_exit "Failed to change directory to navigate to DATAROOT!"
 fi
 
 exit 0

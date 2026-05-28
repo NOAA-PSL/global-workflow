@@ -74,6 +74,7 @@ case "${machine}" in
     "orion") FIX_DIR="/work2/noaa/global/role-global/fix" ;;
     "hercules") FIX_DIR="/work2/noaa/global/role-global/fix" ;;
     "gaeac6") FIX_DIR="/gpfs/f6/drsa-precip3/world-shared/role.glopara/fix" ;;
+    "derecho") FIX_DIR="/lustre/desc1/p/nral0032/global/data/fix" ;;
     "noaacloud") FIX_DIR="/lustre/fix" ;;
     *)
         echo "FATAL: Unknown target machine ${machine}, couldn't set FIX_DIR"
@@ -163,6 +164,7 @@ fi
 #--copy/link NoahMp table form ccpp-physics repository
 cd "${HOMEglobal}/parm/ufs" || exit 1
 ${LINK_OR_COPY} "${HOMEglobal}/sorc/ufs_model.fd/tests/parm/noahmptable.tbl" .
+${LINK_OR_COPY} "${HOMEglobal}/sorc/ufs_model.fd/tests/parm/fd_ufs.yaml" .
 
 cd "${HOMEglobal}/parm/post" || exit 1
 ${LINK_OR_COPY} "${HOMEglobal}/sorc/upp.fd/parm/params_grib2_tbl_new" .
@@ -215,12 +217,38 @@ for file in "${ufs_templates[@]}"; do
     ${LINK_OR_COPY} "${HOMEglobal}/sorc/ufs_model.fd/tests/parm/${file}" .
 done
 
+# Link the CCPP suite XML files from ufs-weather-model
+declare -a ccpp_suites=(
+    "suite_FV3_global_nest_v1.xml"
+    "suite_FV3_GFS_v17_p8_ugwpv1.xml"
+    "suite_FV3_GFS_v17_coupled_p8_ugwpv1.xml"
+)
+if [[ -d "${HOMEglobal}/sorc/ufs_model.fd/UFSATM/ccpp/suites" ]]; then
+    for suite_file in "${ccpp_suites[@]}"; do
+        src="${HOMEglobal}/sorc/ufs_model.fd/UFSATM/ccpp/suites/${suite_file}"
+        [[ -f "${src}" ]] || continue
+        if [[ -s "${suite_file}" ]]; then
+            rm -f "${suite_file}"
+        fi
+        ${LINK_OR_COPY} "${src}" .
+    done
+fi
+
 # Link the script from ufs-weather-model that parses the templates
 cd "${HOMEglobal}/ush" || exit 1
 if [[ -s "atparse.bash" ]]; then
     rm -f "atparse.bash"
 fi
 ${LINK_OR_COPY} "${HOMEglobal}/sorc/ufs_model.fd/tests/atparse.bash" .
+
+# Link UPP modulefiles for module loading
+cd "${HOMEglobal}/modulefiles" || exit 1
+if [[ -d "${HOMEglobal}/sorc/ufs_model.fd/UFSATM/upp/modulefiles" ]]; then
+    if [[ -d "upp" ]]; then
+        rm -rf "upp"
+    fi
+    ${LINK_OR_COPY} "${HOMEglobal}/sorc/ufs_model.fd/UFSATM/upp/modulefiles" upp
+fi
 
 # add ufs_utils parm dir
 if [[ -d "${HOMEglobal}/sorc/ufs_utils.fd" ]]; then
@@ -379,17 +407,16 @@ done
 declare -a model_systems=("gfs" "gefs" "sfs" "gcafs")
 for sys in "${model_systems[@]}"; do
     model_exe="${sys}_model.x"
-    if [[ -s "${model_exe}" ]]; then
-        rm -f "${model_exe}"
+    if [[ -s "ufs_model_${sys}.x" ]]; then
+        rm -f "ufs_model_${sys}.x"
     fi
     if [[ -f "${HOMEglobal}/sorc/ufs_model.fd/tests/${model_exe}" ]]; then
-        ${LINK_OR_COPY} "${HOMEglobal}/sorc/ufs_model.fd/tests/${model_exe}" "${model_exe}"
+        ${LINK_OR_COPY} "${HOMEglobal}/sorc/ufs_model.fd/tests/${model_exe}" "ufs_model_${sys}.x"
     fi
 done
 
 # WW3 pre/post executables
-declare -a ww3_exes=("ww3_grid" "ww3_prep" "ww3_prnc" "ww3_outp" "ww3_outf" "ww3_gint" "ww3_ounf" "ww3_ounp" "ww3_grib")
-# TODO: ww3_prep, ww3_outf, ww3_ounf, ww3_ounp are not used in the workflow # FIXME or remove them from the list
+declare -a ww3_exes=("ww3_grid" "ww3_prnc" "ww3_outp" "ww3_gint" "ww3_grib")
 declare -A wave_systems
 wave_systems["gfs"]="pdlib_ON"
 wave_systems["gefs"]="pdlib_OFF"
@@ -399,7 +426,7 @@ for sys in "${!wave_systems[@]}"; do
     build_loc="${wave_systems[${sys}]}"
     if [[ -d "${HOMEglobal}/sorc/ufs_model.fd/WW3/install/${build_loc}" ]]; then
         for ww3exe in "${ww3_exes[@]}"; do
-            target_ww3_exe="${sys}_${ww3exe}.x"
+            target_ww3_exe="${ww3exe}_${sys}.x"
             if [[ -s "${target_ww3_exe}" ]]; then
                 rm -f "${target_ww3_exe}"
             fi
@@ -413,7 +440,7 @@ if [[ -s "upp.x" ]]; then
 fi
 ${LINK_OR_COPY} "${HOMEglobal}/sorc/upp.fd/exec/upp.x" .
 
-for ufs_utilsexe in emcsfc_ice_blend emcsfc_snow2mdl global_cycle fregrid regridStates.x; do
+for ufs_utilsexe in chgres_cube emcsfc_ice_blend emcsfc_snow2mdl global_cycle regridStates.x; do
     if [[ -s "${ufs_utilsexe}" ]]; then
         rm -f "${ufs_utilsexe}"
     fi
@@ -456,7 +483,7 @@ fi
 # GDASApp executables
 if [[ -d "${HOMEglobal}/sorc/gdas.cd/install" ]]; then
     cp -f "${HOMEglobal}/sorc/gdas.cd/install/bin"/gdas* ./
-    cp -f "${HOMEglobal}/sorc/gdas.cd/install/bin/satbias2ioda.x" ./satbias2ioda.x
+    cp -f "${HOMEglobal}/sorc/gdas.cd/install/bin/satbias2ioda.x" ./gdas_satbias2ioda.x
     cp -f "${HOMEglobal}/sorc/gdas.cd/install/bin/apply_incr.exe" ./gdas_apply_incr.x
 fi
 
@@ -564,18 +591,34 @@ if [[ -d gsi_monitor.fd ]]; then
     ${LINK} gsi_monitor.fd/src/Radiance_Monitor/nwprod/radmon_shared/sorc/verf_radtime.fd radmon_time.fd
 fi
 
-for prog in global_cycle.fd emcsfc_ice_blend.fd emcsfc_snow2mdl.fd; do
+if [[ -d ufs_model.fd ]]; then
+    if [[ -d WW3.fd ]]; then
+        rm -rf WW3.fd
+    fi
+    ${LINK} ufs_model.fd/WW3 WW3.fd
+fi
+
+for prog in chgres_cube.fd global_cycle.fd emcsfc_ice_blend.fd emcsfc_snow2mdl.fd; do
     if [[ -d "${prog}" ]]; then
         rm -rf "${prog}"
     fi
     ${LINK} "ufs_utils.fd/sorc/${prog}" "${prog}"
 done
 
+if [[ -d "regridStates.fd" ]]; then
+    rm -rf "regridStates.fd"
+fi
+${LINK} "ufs_utils.fd/sorc/regrid_sfc.fd" "regridStates.fd"
+
 for prog in enkf_chgres_recenter_nc.fd \
+    ensadd.fd \
+    ensppf.fd \
+    ensstat.fd \
     fbwndgfs.fd \
     gaussian_sfcanl.fd \
     gfs_bufr.fd \
     mkgfsawps.fd \
+    ocnicepost.fd \
     overgridid.fd \
     rdbfmsua.fd \
     supvit.fd \
@@ -586,8 +629,8 @@ for prog in enkf_chgres_recenter_nc.fd \
     tocsbufr.fd \
     tref_calc.fd \
     vint.fd \
-    webtitle.fd \
-    ocnicepost.fd; do
+    wave_stat.fd \
+    webtitle.fd; do
     if [[ -d "${prog}" ]]; then rm -rf "${prog}"; fi
     ${LINK_OR_COPY} "gfs_utils.fd/src/${prog}" .
 done

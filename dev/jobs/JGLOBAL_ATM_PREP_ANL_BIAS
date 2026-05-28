@@ -11,6 +11,9 @@ source "${HOMEglobal}/ush/jjob_standard_vars.sh"
 #{% endif %}
 
 source "${USHglobal}/jjob_shell_setup.sh"
+# Set strict mode which will exit on error or undefined variable
+# and exit on error in a pipeline (e.g. if a command in "cmd | cmd2" fails)
+source "${USHglobal}/set_strict.sh"
 
 ##############################################
 # Set variables used in the script
@@ -40,7 +43,7 @@ ABIAS_SAT=${BIASDIR}/${GDUMP}.t${gcyc}z.abias
 ABIASPC_SAT=${BIASDIR}/${GDUMP}.t${gcyc}z.abias_pc
 ABIAS_JEDI_TAR=${COMOUT_ATMOS_ANALYSIS_PREV}/${GDUMP}.t${gcyc}z.varbc_params.tar
 
-SATBIAS2IODAX=${SATBIAS2IODAX:-${EXECglobal}/satbias2ioda.x}
+SATBIAS2IODAX=${SATBIAS2IODAX:-${EXECglobal}/gdas_satbias2ioda.x}
 SATBIAS2IODAY=${HOMEglobal}/sorc/gdas.cd/ush/satbias_converter.yaml.tmpl
 OUTPUT=${DATA}/output
 
@@ -119,7 +122,7 @@ fi
 if [[ ${err} -ne 0 ]]; then
     err_exit "FATAL ERROR executing ${EXSCRIPT}"
 fi
-set_trace
+set -x
 
 ##############################################
 # End JOB SPECIFIC work

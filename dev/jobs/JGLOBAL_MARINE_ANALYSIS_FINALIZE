@@ -13,6 +13,9 @@ source "${HOMEglobal}/ush/jjob_standard_vars.sh"
 #{% endif %}
 
 source "${USHglobal}/jjob_shell_setup.sh"
+# Set strict mode which will exit on error or undefined variable
+# and exit on error in a pipeline (e.g. if a command in "cmd | cmd2" fails)
+source "${USHglobal}/set_strict.sh"
 
 ##############################################
 # Set variables used in the script
@@ -35,7 +38,6 @@ declare -rx COMOUT_CONF="${ROTDIR}/${RUN}.${PDY}/${cyc}/conf"
 
 mkdir -m 775 -p "${COMOUT_OCEAN_ANALYSIS}"
 mkdir -m 775 -p "${COMOUT_ICE_ANALYSIS}"
-mkdir -m 775 -p "${COMOUT_ICE_RESTART}"
 mkdir -m 775 -p "${COMOUT_CONF}"
 
 ###############################################################
@@ -46,7 +48,7 @@ EXSCRIPT=${GDASMARINEANALYSIS:-${SCRglobal}/exglobal_marine_analysis_finalize.py
 ${EXSCRIPT} && true
 export err=$?
 if [[ ${err} -ne 0 ]]; then
-    err_exit
+    err_exit "Failed to finalize the ocean and/or ice analyses"
 fi
 
 ##########################################
@@ -55,7 +57,7 @@ fi
 cd "${DATAROOT}" && true
 export err=$?
 if [[ ${err} -ne 0 ]]; then
-    err_exit
+    err_exit "Failed to change directory to ${DATAROOT} to remove temporary data"
 fi
 
 if [[ "${KEEPDATA}" == "NO" ]]; then
