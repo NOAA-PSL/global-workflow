@@ -18,6 +18,7 @@
 [submodule "sorc/gsi_enkf.fd"]
   path = sorc/gsi_enkf.fd
   url = https://github.com/NOAA-EMC/GSI.git
+  ignore = dirty
 [submodule "sorc/gdas.cd"]
   path = sorc/gdas.cd
   url = https://github.com/NOAA-PSL/GDASApp.git
@@ -33,3 +34,7 @@
   path = sorc/nexus.fd
   url = https://github.com/NOAA-OAR-ARL/NEXUS.git
   branch = feature/gcafs
+[submodule "parm/gsinfo"]
+  path = parm/gsinfo
+  url = https://github.com/NOAA-PSL/build_gsinfo-fix.git
+  branch = psl-develop
