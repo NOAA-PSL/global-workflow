@@ -199,10 +199,8 @@ gdas:
         - "{{ COMIN_ATMOS_MASTER }}/{{ head }}master.f006.grib2"
         {% if MODE == "cycled" %}
             # Ozone and Radiance diagnostic files may not always be created
-            {% if ARCH_CYC == cycle_HH | int %}
         - "{{ COMIN_ATMOS_ANALYSIS }}/{{ head }}oznstat.tar"
         - "{{ COMIN_ATMOS_ANALYSIS }}/{{ head }}radstat.tar"
-            {% endif %}
             # Radiance verification (only created if there are problems)
             {% if DO_VERFRAD %}
         - "{{ COMIN_ATMOS_RADMON }}/bad_diag.{{ cycle_YMDH }}"
