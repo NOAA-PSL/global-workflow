@@ -19,12 +19,13 @@ SCHEDULER: slurm
 QUEUE: batch
 PARTITION_BATCH: hera
 PARTITION_SERVICE: service
+USE_SCRONTAB: 'YES'
 # HPSS properties
 HPSS_PROJECT: gsienkf
 ARCHCOM_TO: 'aws'
 ATARDIR: 's3://noaa-reanalyses-pds/analyses/scout_runs/3dvar_coupledreanl_scoutrun_v2'
-CHGRP_RSTPROD: 'YES'
-CHGRP_CMD: 'chgrp rstprod'
+CHGRP_RSTPROD: 'NO'
+CHGRP_CMD: 'chgrp gsienkf'
 # Features
 SUPPORTED_RESOLUTIONS: ['C1152', 'C768', 'C384', 'C192', 'C96', 'C48']
 DO_ARCHCOM: 'YES'
