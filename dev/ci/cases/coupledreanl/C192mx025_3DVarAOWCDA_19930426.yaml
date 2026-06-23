@@ -8,8 +8,8 @@ experiment:
   comroot: {{ 'RUNTESTS' | getenv }}/COMROOT
   expdir: {{ 'RUNTESTS' | getenv }}/EXPDIR
   icsdir: {{ 'ICSDIR_ROOT' | getenv }}
-  idate: 2023091512
-  edate: 2025010100 #1979020106  
+  idate: 1993042612
+  edate: 1997010100 #1979020106  
   nens: 0
   interval: 0
   start: warm   
