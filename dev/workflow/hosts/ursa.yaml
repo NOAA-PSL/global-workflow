@@ -19,7 +19,7 @@ SCHEDULER: slurm
 QUEUE: batch
 PARTITION_BATCH: u1-compute
 PARTITION_SERVICE: u1-service
-USE_SCRONTAB: 'YES'
+# USE_SCRONTAB: 'NO'
 # HPSS properties
 HPSS_PROJECT: ufs-artic
 ARCHCOM_TO: 'aws'

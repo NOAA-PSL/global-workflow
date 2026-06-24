@@ -19,7 +19,7 @@ SCHEDULER: slurm
 QUEUE: batch
 PARTITION_BATCH: hera
 PARTITION_SERVICE: service
-USE_SCRONTAB: 'YES'
+# USE_SCRONTAB: 'YES'
 # HPSS properties
 HPSS_PROJECT: gsienkf
 ARCHCOM_TO: 'aws'
