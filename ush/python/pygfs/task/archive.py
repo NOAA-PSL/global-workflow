@@ -873,6 +873,7 @@ class Archive(Task):
         # Extract and validate basic configuration
         try:
             cycle_HH = int(strftime(arch_dict.current_cycle, "%H"))
+            cycle_DD = int(strftime(arch_dict.current_cycle, "%d"))
             SDATE = arch_dict.SDATE
             RUN = arch_dict.RUN.lower()
             assim_freq = int(arch_dict.assim_freq)
@@ -907,6 +908,10 @@ class Archive(Task):
         if days_since_sdate % warmicfreq == 0:
             return True
 
+        # If first day of month, archive warm restarts
+        if cycle_DD = 1:
+            return True
+
         return False
 
     def _arch_restart(self, arch_dict: AttrDict) -> bool:
@@ -924,7 +929,7 @@ class Archive(Task):
         # Restart archiving for gdas RUN
         if run == "gdas":
             # TODO: Always archive gdas ocean restarts (for GEFSv13 when project restarts)
-            if (tar_type == "gdasocean_restart") and arch_warm_ics:
+            if (tar_type == "gdasocean_restart" or tar_type == "gdasice_restart") and arch_warm_ics:
                 return True
 
             # Archive warm atmosphere and ice increments if requested
