@@ -909,7 +909,7 @@ class Archive(Task):
             return True
 
         # If first day of month, archive warm restarts
-        if cycle_DD = 1:
+        if cycle_DD == 1:
             return True
 
         return False
