@@ -498,7 +498,7 @@ case "${machine}" in
     URSA | GAEAC6 | ORION | HERCULES | DERECHO | AWS-EC2) export DO_METP=NO;;
     *) export DO_METP="{{ DO_METP }}";;
 esac
-export DO_FIT2OBS="YES"      # Run fit to observations package
+export DO_FIT2OBS="NO"      # Run fit to observations package
 
 #--online archive of netcdf files for fit2obs verification
 export FHMAX_FITS=132
