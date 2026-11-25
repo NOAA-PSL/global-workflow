@@ -874,6 +874,8 @@ class Archive(Task):
         try:
             cycle_HH = int(strftime(arch_dict.current_cycle, "%H"))
             cycle_DD = int(strftime(arch_dict.current_cycle, "%d"))
+            cycle_MM = int(strftime(arch_dict.current_cycle, "%m"))
+            cycle_YYYY = int(strftime(arch_dict.current_cycle, "%Y"))
             SDATE = arch_dict.SDATE
             RUN = arch_dict.RUN.lower()
             assim_freq = int(arch_dict.assim_freq)
@@ -908,8 +910,9 @@ class Archive(Task):
         if days_since_sdate % warmicfreq == 0:
             return True
 
-        # If first day of month, archive warm restarts
-        if cycle_DD == 1:
+        # If last day of month, archive warm restarts
+        days_in_month = calendar.monthrange(cycle_YYYY, cycle_MM)[1]
+        if cycle_DD == days_in_month:
             return True
 
         return False
